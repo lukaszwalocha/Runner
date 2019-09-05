@@ -1,0 +1,10 @@
+﻿  Main.cpp
+  Enemy.cpp
+d:\documents\visual studio 2013\projects\runner\runner\enemy.cpp(59): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+d:\documents\visual studio 2013\projects\runner\runner\enemy.cpp(60): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  IShape.cpp
+  Player.cpp
+  Blocks.cpp
+  Runner.vcxproj -> d:\documents\visual studio 2013\Projects\Runner\Debug\Runner.exe
