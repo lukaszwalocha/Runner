@@ -62,10 +62,9 @@ void Blocks::checkCollision(Player& player){
 			player.currentState = 0;
 			alreadyTouched = obj;           //the block on which the player is actually standing
 		}
-		if (player.currentState == 0){
-			if (!(alreadyTouched->blockBody.getGlobalBounds().intersects(playerBody.getGlobalBounds()))){ // if player is actually standing on the current block 
-				player.currentState = 2;	//check if he will step of - if yes, change current state on falling
-			}
+		else if (player.currentState == 0 && !(alreadyTouched->blockBody.getGlobalBounds().intersects(playerBody.getGlobalBounds()))){
+		// if player is actually standing on the current block 
+			player.currentState = 2;	//check if he will step of - if yes, change current state on falling
 		}
 	}
 }

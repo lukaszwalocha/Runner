@@ -20,6 +20,6 @@ private:
 	int currentState;
 	int respawnCounter;
 	sf::RectangleShape enemyBody;
-	std::vector<std::unique_ptr<Enemy>> enemiesVector;
+	std::vector<std::shared_ptr<Enemy>> enemiesVector;
 };
 

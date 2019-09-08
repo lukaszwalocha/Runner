@@ -23,7 +23,6 @@ void Oxygen::move(){
 
 	if (!bottlesVector.empty()){
 		for (auto& obj : bottlesVector){
-
 			//STATE SWITCHING INSTRUCTIONS
 			if (obj->oxygenBottle.getPosition().y < 500 && obj->currentState != 2)
 				obj->currentState = 1;
@@ -89,15 +88,11 @@ sf::RectangleShape Oxygen::getBottleBody() const{
 void Oxygen::checkCollision(Player& player){
 
 	sf::RectangleShape playerBody = player.getBody();
-	std::vector<std::shared_ptr<Oxygen>> &referencedVect = bottlesVector;
-
 	if (!bottlesVector.empty()){
-
-		referencedVect.erase(std::remove_if(referencedVect.begin(), referencedVect.end(), [&](const std::shared_ptr<Oxygen> obj)-> bool
-		{ return obj->oxygenBottle.getGlobalBounds().intersects(playerBody.getGlobalBounds()); }), referencedVect.end());
+		bottlesVector.erase(std::remove_if(bottlesVector.begin(), bottlesVector.end(), [&](const std::shared_ptr<Oxygen> obj)-> bool
+		{ return obj->oxygenBottle.getGlobalBounds().intersects(playerBody.getGlobalBounds()); }), bottlesVector.end());
 		respawnCounter = 0;
 	}
-
 }
 
 void Oxygen::draw(sf::RenderWindow& window){

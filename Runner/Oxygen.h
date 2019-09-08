@@ -29,6 +29,5 @@ class Oxygen: public IShape{
 		int currentState;
 		int movementSpeed;
 		std::vector<std::shared_ptr<Oxygen>> bottlesVector;
-		std::vector<std::shared_ptr<Oxygen>>::iterator it;
 };
 

@@ -28,23 +28,12 @@ void Enemy::emplaceEnemy(){
 }
 
 void Enemy::eraseEnemy(){
-	auto it = enemiesVector.end();
-
-	for (auto& obj : enemiesVector){
-		if (obj->enemyBody.getPosition().x < -50){
-			it = enemiesVector.begin();
-		}	
-	}
-	if (it != enemiesVector.end()){
-		enemiesVector.erase(it);
-	}
+	enemiesVector.erase(std::remove_if(enemiesVector.begin(), enemiesVector.end(), [&](const std::shared_ptr<Enemy> enemy)->bool
+	{return (enemy->enemyBody.getPosition().x < -50) /*|| enemy->enemyBody.getPosition().x < 100)*/; }), enemiesVector.end());
 }
 
 void Enemy::move(){
 
-
-		std::cout << enemiesVector.size() << std::endl;
-	
 	if (!enemiesVector.empty()){
 		for (auto& obj : enemiesVector){
 		//STATE SWITCHING INSTRUCTIONS
