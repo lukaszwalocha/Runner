@@ -3,6 +3,7 @@
 #include "Blocks.h"
 #include "Oxygen.h"
 #include "Enemy.h"
+#include "RelationsManager.h"
 #include <memory>
 //Design patterns - state and strategy
 
@@ -13,10 +14,13 @@ int main(){
 	sf::RenderWindow window(sf::VideoMode(1024, 768), "Runner");
 	window.setFramerateLimit(120);
 	//OBJECTS
-	Player playerObject;
-	Blocks blocksObject(window);
-	Oxygen bottleObject;
-	Enemy enemyObject;
+	RelationsManager relationsManager;
+	std::unique_ptr<IShape> playerObject = relationsManager.makeAlive("Player", window);
+	std::unique_ptr<IShape> enemyObject  = relationsManager.makeAlive("Enemy", window);
+	std::unique_ptr<IShape> blocksObject = relationsManager.makeAlive("Blocks", window);
+	std::unique_ptr<IShape> oxygenObject = relationsManager.makeAlive("Oxygen", window);
+	std::unique_ptr<IShape> rainObject   = relationsManager.makeAlive("Rain", window);
+	std::unique_ptr<IShape> windObject   = relationsManager.makeAlive("Wind", window);
 
 	while (window.isOpen()){
 		sf::Event evnt;
@@ -27,28 +31,17 @@ int main(){
 		
 		window.clear();
 		
-		//PLAYER INTERACTIONS
-		playerObject.draw(window);
-		playerObject.move();
+		playerObject->defineBehaviour(window);
+		enemyObject ->defineBehaviour(window);
+		blocksObject->defineBehaviour(window);
+		oxygenObject->defineBehaviour(window);
+		rainObject  ->defineBehaviour(window);
+		windObject  ->defineBehaviour(window);
 
-		//BLOCKS INTERACTIONS
-		blocksObject.move();
-		blocksObject.emplaceBack(window);
-		blocksObject.checkCollision(playerObject);
-		blocksObject.draw(window);
+		relationsManager.checkCollision__Blocks(blocksObject, playerObject);
+		relationsManager.checkCollision__Oxygen(oxygenObject, playerObject);
+		relationsManager.checkCollision__Wind(windObject, playerObject);
 
-		//OXYGEN BOTTLES
-		bottleObject.checkCollision(playerObject);
-		bottleObject.emplaceElement();
-		bottleObject.move();
-		bottleObject.draw(window);
-
-		//ENEMY INTERACTIONS
-		enemyObject.emplaceEnemy();
-		enemyObject.move();
-		enemyObject.eraseEnemy();
-		enemyObject.draw(window);
-		
 		
 		window.display();
 		

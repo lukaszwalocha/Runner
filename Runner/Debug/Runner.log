@@ -1,9 +1,7 @@
-﻿  Weather.cpp
-  Oxygen.cpp
-d:\documents\visual studio 2013\projects\runner\runner\oxygen.cpp(35): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-d:\documents\visual studio 2013\projects\runner\runner\oxygen.cpp(36): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-  Enemy.cpp
-d:\documents\visual studio 2013\projects\runner\runner\enemy.cpp(48): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-d:\documents\visual studio 2013\projects\runner\runner\enemy.cpp(49): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+﻿  Rain.cpp
+d:\documents\visual studio 2013\projects\runner\runner\rain.cpp(96): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
   Generating Code...
+  Skipping... (no relevant changes detected)
+  RelationsManager.cpp
+  Main.cpp
   Runner.vcxproj -> d:\documents\visual studio 2013\Projects\Runner\Debug\Runner.exe

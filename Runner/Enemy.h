@@ -1,25 +1,29 @@
 #pragma once
 #include "IShape.h"
-#include <memory>
-#include <iostream>
 
 class Enemy : public IShape
 {
 public:
-	Enemy();
+	Enemy() = default;
+	explicit Enemy(std::string name);
 	~Enemy();
 public:
-	void move();
-	void setElementPosition();
-	void setMovementSpeed();
-	void emplaceEnemy();
-	void eraseEnemy();
-	void draw(sf::RenderWindow& window);
+	void emplaceEnemies();
+	void eraseEnemies();
+	void move()							override;
+	void setElementPosition()			override;
+	void setMovementSpeed()				override;
+	void draw(sf::RenderWindow& window) override;
+	void defineBehaviour(sf::RenderWindow& window) override;
+	sf::RectangleShape getBody() const;
+	std::string getName() override;
+public:
+	int respawnCounter;
+	std::string name;
 private:
 	int movementSpeed;
 	int currentState;
-	int respawnCounter;
 	sf::RectangleShape enemyBody;
-	std::vector<std::shared_ptr<Enemy>> enemiesVector;
+	std::vector<std::shared_ptr<Enemy>>enemiesVector;
 };
 

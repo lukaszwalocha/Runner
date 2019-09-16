@@ -1,31 +1,29 @@
 #pragma once
 #include "IShape.h"
-#include "Player.h"
-#include <vector>
-#include <memory>
-#include <random>
 
 class Blocks:public IShape{
 	public:
 		Blocks();
-		explicit Blocks(const Blocks&);
-		explicit Blocks(sf::RenderWindow& window);
+		Blocks(const Blocks&);
+		Blocks(sf::RenderWindow& window, std::string name);
 		~Blocks();
 	public:
-		void move()							override;
-		void checkCollision(Player& player);
+		void move() override;
 		void setElementPosition()			override;
 		void setMovementSpeed()				override;
 		void draw(sf::RenderWindow& window) override;
-		void emplaceBack(sf::RenderWindow& window);
+		void emplaceBlocks(sf::RenderWindow& window);
+		void defineBehaviour(sf::RenderWindow& window) override;
 		float randomizeWidth();
-	private:
+		sf::RectangleShape getBody();
+		std::string getName() override;
+	public:
+		int respawnCounter;
+		float blockWidth;
 		std::vector<std::shared_ptr<Blocks>> blocksVector;
+		std::string name;
 	private:
 		sf::RectangleShape blockBody;
-		std::vector<std::shared_ptr<Blocks>>::iterator removingIter;
 		float movementSpeed;
-		float blockWidth;
-		int respawnCounter;
 };
 

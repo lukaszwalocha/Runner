@@ -1,8 +1,9 @@
 #include "Oxygen.h"
 
 
-Oxygen::Oxygen(){
+Oxygen::Oxygen(std::string name){
 
+	this->name = name;
 	this->setElementPosition();
 	this->setMovementSpeed();
 	this->oxygenBottle.setFillColor(sf::Color::Red);
@@ -15,14 +16,33 @@ Oxygen::~Oxygen()
 {
 }
 
+void Oxygen::defineBehaviour(sf::RenderWindow& window){
+	this->emplaceOxygenBottles();
+	this->move();
+	this->draw(window);
+}
+
+std::string Oxygen::getName(){
+	return this->name;
+}
+
 void Oxygen::setMovementSpeed(){
 	movementSpeed = 2;
 }
 
+void Oxygen::emplaceOxygenBottles(){
+	respawnCounter++;
+	if (respawnCounter > 1200 && oxygenBottlesVect.size() == 0){
+		std::unique_ptr<Oxygen> newBottle = std::make_unique < Oxygen >("Oxygen");
+		oxygenBottlesVect.emplace_back(std::move(newBottle));
+		respawnCounter = 0;
+	}
+}
+
 void Oxygen::move(){
 
-	if (!bottlesVector.empty()){
-		for (auto& obj : bottlesVector){
+	if (!oxygenBottlesVect.empty()){
+		for (auto& obj : oxygenBottlesVect){
 			//STATE SWITCHING INSTRUCTIONS
 			if (obj->oxygenBottle.getPosition().y < 500 && obj->currentState != 2)
 				obj->currentState = 1;
@@ -47,15 +67,7 @@ void Oxygen::setElementPosition(){
 	oxygenBottle.setPosition(posX, posY);
 }
 
-void Oxygen::emplaceElement(){
 
-	respawnCounter++;
-	if ( respawnCounter > 1200  && bottlesVector.size() == 0){
-		std::unique_ptr<Oxygen> newBottle = std::make_unique < Oxygen >();
-		bottlesVector.emplace_back(std::move(newBottle));
-		respawnCounter = 0;
-	}
-}
 
 float Oxygen::randomizePosX() const{
 
@@ -85,19 +97,10 @@ sf::RectangleShape Oxygen::getBottleBody() const{
 	return this->oxygenBottle;
 }
 
-void Oxygen::checkCollision(Player& player){
-
-	sf::RectangleShape playerBody = player.getBody();
-	if (!bottlesVector.empty()){
-		bottlesVector.erase(std::remove_if(bottlesVector.begin(), bottlesVector.end(), [&](const std::shared_ptr<Oxygen> obj)-> bool
-		{ return obj->oxygenBottle.getGlobalBounds().intersects(playerBody.getGlobalBounds()); }), bottlesVector.end());
-		respawnCounter = 0;
-	}
-}
 
 void Oxygen::draw(sf::RenderWindow& window){
 
-	for (auto& obj : bottlesVector){
+	for (auto& obj : oxygenBottlesVect){
 		window.draw(obj->oxygenBottle);
 	}
 }

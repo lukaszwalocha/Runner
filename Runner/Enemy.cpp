@@ -1,6 +1,7 @@
 #include "Enemy.h"
-Enemy::Enemy()
+Enemy::Enemy(std::string name)
 {
+	this->name = name;
 	this->enemyBody.setSize(sf::Vector2f(20.0f, 20.0f));
 	this->enemyBody.setFillColor(sf::Color::Magenta);
 	this->enemyBody.setPosition(1000, 500);
@@ -12,25 +13,46 @@ Enemy::~Enemy()
 {
 }
 
+std::string Enemy::getName(){
+
+	return this->name;
+}
+
+void Enemy::emplaceEnemies(){
+	respawnCounter++;
+	if (respawnCounter > 1400 && enemiesVector.size() == 0){
+		std::unique_ptr<Enemy> newEnemy = std::make_unique<Enemy>("Enemy");
+		enemiesVector.emplace_back(std::move(newEnemy));
+		respawnCounter = 0;
+	}
+
+}
+
+void Enemy::eraseEnemies(){
+
+	enemiesVector.erase(std::remove_if(enemiesVector.begin(), enemiesVector.end(), [&](const std::shared_ptr<Enemy> enemy)->bool
+	{return (enemy->getBody().getPosition().x < -50) /*|| enemy->enemyBody.getPosition().x < 100)*/; }), enemiesVector.end());
+
+}
+
+void Enemy::defineBehaviour(sf::RenderWindow& window){
+	this->emplaceEnemies();
+	this->eraseEnemies();
+	this->move();
+	this->draw(window);
+}
+
 void Enemy::draw(sf::RenderWindow& window){
 	for (auto& obj : enemiesVector){
 		window.draw(obj->enemyBody);
 	}
 }
 
-void Enemy::emplaceEnemy(){
-	respawnCounter++;
-	if (respawnCounter > 1400 && enemiesVector.size() == 0){
-		std::unique_ptr<Enemy> newEnemy= std::make_unique<Enemy>();
-		enemiesVector.emplace_back(std::move(newEnemy));
-		respawnCounter = 0;
-	}
+sf::RectangleShape Enemy::getBody() const{
+	return this->enemyBody;
 }
 
-void Enemy::eraseEnemy(){
-	enemiesVector.erase(std::remove_if(enemiesVector.begin(), enemiesVector.end(), [&](const std::shared_ptr<Enemy> enemy)->bool
-	{return (enemy->enemyBody.getPosition().x < -50) /*|| enemy->enemyBody.getPosition().x < 100)*/; }), enemiesVector.end());
-}
+
 
 void Enemy::move(){
 

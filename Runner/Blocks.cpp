@@ -7,8 +7,10 @@ Blocks::Blocks(const Blocks&){
 Blocks::Blocks(){
 	
 }
-Blocks::Blocks(sf::RenderWindow& window)
+
+Blocks::Blocks(sf::RenderWindow& window, std::string name)
 {
+	this->name = name;
 	this->setMovementSpeed();
 	this->blockWidth = randomizeWidth();
 	this->blockBody.setFillColor(sf::Color::White);
@@ -18,7 +20,13 @@ Blocks::Blocks(sf::RenderWindow& window)
 }
 
 
+
 Blocks::~Blocks(){
+}
+
+std::string Blocks::getName(){
+
+	return this->name;
 }
 
 void Blocks::setMovementSpeed(){
@@ -38,11 +46,26 @@ float Blocks::randomizeWidth(){
 
 }
 
+sf::RectangleShape Blocks::getBody(){
+	return this->blockBody;
+}
+
+void Blocks::emplaceBlocks(sf::RenderWindow& window){
+	respawnCounter++;
+	if (respawnCounter == 80){
+		std::shared_ptr<Blocks> newElement = std::make_shared<Blocks>(window, "Blocks");
+
+		newElement->blockWidth = randomizeWidth();
+		blocksVector.emplace_back(std::move(newElement));
+		respawnCounter = 0;
+	}
+}
+
 void Blocks::move(){
-	
+
 	if (!blocksVector.empty()){
-		removingIter = blocksVector.begin();
-		for(auto& obj : blocksVector){
+		auto removingIter = blocksVector.begin();
+		for (auto& obj : blocksVector){
 			obj->blockBody.move(-movementSpeed, 0);
 		}
 		if (blocksVector[0]->blockBody.getPosition().x < 0 - blocksVector[0]->blockBody.getSize().x){
@@ -51,23 +74,7 @@ void Blocks::move(){
 	}
 }
 
-void Blocks::checkCollision(Player& player){
 
-	sf::RectangleShape playerBody = player.getBody();
-	std::shared_ptr<Blocks> alreadyTouched = std::make_shared<Blocks>() ;
-	
-	for (auto& obj : blocksVector){			//for every block in vector check if playerbody and blocks object collides. 
-		if (obj->blockBody.getGlobalBounds().intersects(playerBody.getGlobalBounds())&& playerBody.getPosition().y <= 658){
-			player.movementSpeed = 3;       // if yes, and the playerbody position is less or equal to top position of block, change actual state
-			player.currentState = 0;
-			alreadyTouched = obj;           //the block on which the player is actually standing
-		}
-		else if (player.currentState == 0 && !(alreadyTouched->blockBody.getGlobalBounds().intersects(playerBody.getGlobalBounds()))){
-		// if player is actually standing on the current block 
-			player.currentState = 2;	//check if he will step of - if yes, change current state on falling
-		}
-	}
-}
 
 void Blocks::setElementPosition(){
 
@@ -79,15 +86,9 @@ void Blocks::draw(sf::RenderWindow& window){
 		window.draw(obj->blockBody);
 	}
 }
-
-void Blocks::emplaceBack(sf::RenderWindow& window){
-
-	respawnCounter++;
-	if (respawnCounter == 80){
-		std::shared_ptr<Blocks> newElement = std::make_shared<Blocks>(window);
-
-		newElement->blockWidth = randomizeWidth();
-		blocksVector.emplace_back(std::move(newElement));
-		respawnCounter = 0;
-	}
+void Blocks::defineBehaviour(sf::RenderWindow& window){
+	this->setElementPosition();
+	this->emplaceBlocks(window);
+	this->move();
+	this->draw(window);
 }

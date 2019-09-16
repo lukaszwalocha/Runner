@@ -1,33 +1,32 @@
 #pragma once
-#include <vector>
-#include <memory>
-#include <random>
-#include <SFML\Graphics.hpp>
 #include "IShape.h"
-#include "Player.h"
-#include <iostream>
+
 
 class Oxygen: public IShape{
 	public:
-		Oxygen();
+		Oxygen() = default;
+		explicit Oxygen(std::string name);
 		~Oxygen();
 	public:
 		void move();
 		void setElementPosition()           override;
 		void setMovementSpeed()             override;
 		void draw(sf::RenderWindow& window) override;
-		void emplaceElement();
-		void checkCollision(Player& player);
+		void emplaceOxygenBottles();
+		void defineBehaviour(sf::RenderWindow& window) override;
 		sf::RectangleShape getBottleBody() const;
-		float randomizePosX() const;
-		float randomizePosY() const;
+		float randomizePosX()			   const;
+		float randomizePosY()			   const;
+		std::string getName() override;
+	public:
+		int respawnCounter;
+		std::vector<std::shared_ptr<Oxygen>> oxygenBottlesVect;
+		std::string name;
 	private:
 		sf::RectangleShape oxygenBottle;
 		float posX;
 		float posY;
-		int respawnCounter;
 		int currentState;
 		int movementSpeed;
-		std::vector<std::shared_ptr<Oxygen>> bottlesVector;
 };
 
