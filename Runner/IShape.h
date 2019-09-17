@@ -6,6 +6,7 @@
 #include <random>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 
 class IShape{

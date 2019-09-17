@@ -5,6 +5,7 @@
 #include "Blocks.h"
 #include "Wind.h"
 #include "Rain.h"
+#include "Coins.h"
 #include <string>
 
 class RelationsManager{

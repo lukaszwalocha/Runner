@@ -32,6 +32,9 @@ std::unique_ptr<IShape> RelationsManager::makeAlive(std::string name , sf::Rende
 	else if (name == "Oxygen"){
 		type = 6;
 	}
+	else if (name == "Coins"){
+		type = 7;
+	}
 
 	switch (type){
 		case 1:
@@ -46,6 +49,8 @@ std::unique_ptr<IShape> RelationsManager::makeAlive(std::string name , sf::Rende
 			newObject = std::make_unique<Wind>("Wind");             break;
 		case 6:
 			newObject = std::make_unique<Oxygen>("Oxygen");         break;
+		case 7:
+			newObject = std::make_unique<Coins>("Coins");			break;
 		default: break;
 	}
 

@@ -85,6 +85,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Blocks.cpp" />
+    <ClCompile Include="Coins.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="IShape.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -96,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Blocks.h" />
+    <ClInclude Include="Coins.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="IShape.h" />
     <ClInclude Include="Oxygen.h" />
