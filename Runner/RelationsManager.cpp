@@ -124,3 +124,34 @@ void RelationsManager::checkCollision__Rain(std::unique_ptr<Rain> rainObject, st
 
 
 }
+
+//COINS-PLAYER RELATIONS------------------------------------------------------
+void RelationsManager::checkCollision__Coins(std::unique_ptr<IShape>& coinObj, std::unique_ptr<IShape>& playerObj){
+
+	Player* playerObject = static_cast<Player*>(playerObj.get());
+	Coins*  coinObject   = static_cast<Coins*>(coinObj.get());
+
+	sf::RectangleShape playerBody = playerObject->getBody();
+	int dissapearType = 0;
+
+	auto resultCollision   = std::find_if(coinObject->coinsVector.begin(), coinObject->coinsVector.end(), 
+						     [&](const std::unique_ptr<Coins>& coinObject){ 
+				             return coinObject->coinBody.getGlobalBounds().intersects(playerBody.getGlobalBounds());});
+
+	auto resultOutOfScreen = std::find_if(coinObject->coinsVector.begin(), coinObject->coinsVector.end(), 
+				             [&](const std::unique_ptr<Coins>& coinObject){
+				             return coinObject->coinBody.getPosition().x < 0;});
+
+	if (resultCollision != coinObject->coinsVector.end()){
+		dissapearType = 1;
+		coinObject->coinsVector.erase(resultCollision);
+		//here we wil add points collection later :)
+	}
+	else if (resultOutOfScreen != coinObject->coinsVector.end()){
+		dissapearType = 2;
+		coinObject->coinsVector.erase(resultOutOfScreen);
+	}
+	
+	std::cout << coinObject->coinsVector.size() << std::endl;
+
+}

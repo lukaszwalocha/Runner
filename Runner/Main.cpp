@@ -43,6 +43,7 @@ int main(){
 		relationsManager.checkCollision__Blocks(blocksObject, playerObject);
 		relationsManager.checkCollision__Oxygen(oxygenObject, playerObject);
 		relationsManager.checkCollision__Wind(windObject, playerObject);
+		relationsManager.checkCollision__Coins(coinsObject, playerObject);
 
 		
 		window.display();
