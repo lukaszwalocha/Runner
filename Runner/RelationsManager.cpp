@@ -35,6 +35,9 @@ std::unique_ptr<IShape> RelationsManager::makeAlive(std::string name , sf::Rende
 	else if (name == "Coins"){
 		type = 7;
 	}
+	else if (name == "Upper blocks"){
+		type = 8;
+	}
 
 	switch (type){
 		case 1:
@@ -51,6 +54,8 @@ std::unique_ptr<IShape> RelationsManager::makeAlive(std::string name , sf::Rende
 			newObject = std::make_unique<Oxygen>("Oxygen");         break;
 		case 7:
 			newObject = std::make_unique<Coins>("Coins");			break;
+		case 8:
+			newObject = std::make_unique<Blocks>("Upper blocks");   break;
 		default: break;
 	}
 
@@ -73,7 +78,7 @@ void RelationsManager::checkCollision__Blocks(std::unique_ptr<IShape>&blockObj, 
 	std::shared_ptr<Blocks> alreadyTouched = std::make_shared<Blocks>();
 
 	for (auto& obj : blockObject->blocksVector){			//for every block in vector check if playerbody and blocks object collides. 
-		if (obj->getBody().getGlobalBounds().intersects(playerBody.getGlobalBounds()) && playerBody.getPosition().y <= 658){
+		if (obj->getBody().getGlobalBounds().intersects(playerBody.getGlobalBounds()) && (playerBody.getPosition().y <= 658 || playerBody.getPosition().y <=500)){
 			playerObject->movementSpeed = 3;       // if yes, and the playerbody position is less or equal to top position of block, change actual state
 			playerObject->currentState = 0;
 			alreadyTouched = obj;           //the block on which the player is actually standing
