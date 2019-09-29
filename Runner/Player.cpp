@@ -41,7 +41,7 @@ void Player::move(){
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && currentState !=2)
 		currentState = 1;
 	//STOP JUMP
-	if (this->playerBody.getPosition().y < 347)
+	if (this->playerBody.getPosition().y < 150 ||  movementSpeed < 0)
 		currentState = 2;
 	//MOVING UP AND DOWN
 	switch (currentState){

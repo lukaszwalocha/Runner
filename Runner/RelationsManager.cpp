@@ -66,7 +66,26 @@ void RelationsManager::setBehaviour(sf::RenderWindow& window, std::unique_ptr<IS
 	object->defineBehaviour(window);
 }
 //----------------------------------
-
+//SUBFUNCTION FOR CHECKING BOTH TYPES BLOCK COLLISIONS
+void RelationsManager::currentBlocksCollision(std::vector<std::shared_ptr<Blocks>>& blocksVect, 
+	                                          sf::RectangleShape& playerBody, Player* playerObject, 
+	                                          std::shared_ptr<Blocks>& alreadyTouched, int collisionHeight){
+	std::for_each(blocksVect.cbegin(), blocksVect.cend(), [&](const std::shared_ptr<Blocks>& currentElement){
+		if (currentElement->getBody().getGlobalBounds().intersects(playerBody.getGlobalBounds()) && playerBody.getPosition().y <= collisionHeight && playerObject->currentState == 2){
+			playerObject->movementSpeed = 3;             //for every block in vector check if playerbody and blocks object collides.
+			playerObject->currentState  = 0;              // if yes, and the playerbody position is less or equal to top position of block, change actual state
+			alreadyTouched              = std::move(currentElement); //the block on which the player is actually standing
+		}
+		if (collisionHeight == 660){
+			if (playerObject->currentState == 0 && !(alreadyTouched->getBody().getGlobalBounds().intersects(playerBody.getGlobalBounds()))){
+				// if player is actually standing on the current block 
+				playerObject->movementSpeed = 1;
+				playerObject->currentState  = 2;	//check if he will step of - if yes, change current state on falling - we use here only case for base blocks - it should work for both types
+			}
+		}
+	;});
+	std::cout << playerObject->currentState << std::endl;
+}
 
 //------------------------------
 void RelationsManager::checkCollision__Blocks(std::unique_ptr<IShape>&blockObj, std::unique_ptr<IShape>&playerObj){
@@ -74,21 +93,12 @@ void RelationsManager::checkCollision__Blocks(std::unique_ptr<IShape>&blockObj, 
 	Player* playerObject = static_cast<Player*>(playerObj.get());
 	Blocks* blockObject  = static_cast<Blocks*>(blockObj.get());
 
-	sf::RectangleShape playerBody = playerObject->getBody();
+	sf::RectangleShape playerBody          = playerObject->getBody();
 	std::shared_ptr<Blocks> alreadyTouched = std::make_shared<Blocks>();
 
-	for (auto& obj : blockObject->blocksVector){			//for every block in vector check if playerbody and blocks object collides. 
-		if (obj->getBody().getGlobalBounds().intersects(playerBody.getGlobalBounds()) && (playerBody.getPosition().y <= 658 || playerBody.getPosition().y <=500)){
-			playerObject->movementSpeed = 3;       // if yes, and the playerbody position is less or equal to top position of block, change actual state
-			playerObject->currentState = 0;
-			alreadyTouched = obj;           //the block on which the player is actually standing
-		}
-		else if (playerObject->currentState == 0 && !(alreadyTouched->getBody().getGlobalBounds().intersects(playerBody.getGlobalBounds()))){
-			// if player is actually standing on the current block 
-			playerObject->currentState = 2;	//check if he will step of - if yes, change current state on falling
-		}
-	}
-	
+	currentBlocksCollision(blockObject->blocksVector, playerBody, playerObject, alreadyTouched, 660);
+	currentBlocksCollision(blockObject->upperBlocksVector, playerBody, playerObject, alreadyTouched, 458);
+
 }
 
 //OXYGEN BOTTLES RELATIONS--------------------------------------------
@@ -157,6 +167,4 @@ void RelationsManager::checkCollision__Coins(std::unique_ptr<IShape>& coinObj, s
 		coinObject->coinsVector.erase(resultOutOfScreen);
 	}
 	
-	std::cout << coinObject->coinsVector.size() << std::endl;
-
 }
