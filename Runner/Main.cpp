@@ -23,6 +23,7 @@ int main(){
 	std::unique_ptr<IShape> rainObject       = relationsManager.makeAlive("Rain", window);
 	std::unique_ptr<IShape> windObject       = relationsManager.makeAlive("Wind", window);
 	std::unique_ptr<IShape> coinsObject      = relationsManager.makeAlive("Coins", window);
+	std::unique_ptr<IShape> obstaclesObject  = relationsManager.makeAlive("Obstacle", window);
 
 	while (window.isOpen()){
 		sf::Event evnt;
@@ -40,6 +41,7 @@ int main(){
 		rainObject       -> defineBehaviour(window);
 		windObject       -> defineBehaviour(window);
 		coinsObject      -> defineBehaviour(window);
+		obstaclesObject  -> defineBehaviour(window);
 
 		relationsManager.checkCollision__Blocks(blocksObject, playerObject);
 		relationsManager.checkCollision__Oxygen(oxygenObject, playerObject);

@@ -38,6 +38,9 @@ std::unique_ptr<IShape> RelationsManager::makeAlive(std::string name , sf::Rende
 	else if (name == "Upper blocks"){
 		type = 8;
 	}
+	else if (name == "Obstacle"){
+		type = 9;
+	}
 
 	switch (type){
 		case 1:
@@ -56,6 +59,8 @@ std::unique_ptr<IShape> RelationsManager::makeAlive(std::string name , sf::Rende
 			newObject = std::make_unique<Coins>("Coins");			break;
 		case 8:
 			newObject = std::make_unique<Blocks>("Upper blocks");   break;
+		case 9:
+			newObject = std::make_unique<Obstacles>("Obstacle");	break;
 		default: break;
 	}
 
@@ -66,25 +71,32 @@ void RelationsManager::setBehaviour(sf::RenderWindow& window, std::unique_ptr<IS
 	object->defineBehaviour(window);
 }
 //----------------------------------
+
+//------------------------OBSTACLES RELATIONS
+
+void checkCollision__Obstacles(std::unique_ptr<IShape>& obstacleObj, std::unique_ptr<IShape>& playerObj){
+
+}
 //SUBFUNCTION FOR CHECKING BOTH TYPES BLOCK COLLISIONS
 void RelationsManager::currentBlocksCollision(std::vector<std::shared_ptr<Blocks>>& blocksVect, 
 	                                          sf::RectangleShape& playerBody, Player* playerObject, 
 	                                          std::shared_ptr<Blocks>& alreadyTouched, int collisionHeight){
-	std::for_each(blocksVect.cbegin(), blocksVect.cend(), [&](const std::shared_ptr<Blocks>& currentElement){
+	std::for_each(blocksVect.begin(), blocksVect.end(), [&](const std::shared_ptr<Blocks>& currentElement){
 		if (currentElement->getBody().getGlobalBounds().intersects(playerBody.getGlobalBounds()) && playerBody.getPosition().y <= collisionHeight && playerObject->currentState == 2){
 			playerObject->movementSpeed = 3;             //for every block in vector check if playerbody and blocks object collides.
 			playerObject->currentState  = 0;              // if yes, and the playerbody position is less or equal to top position of block, change actual state
-			alreadyTouched              = std::move(currentElement); //the block on which the player is actually standing
+			alreadyTouched              = currentElement; //the block on which the player is actually standing
 		}
+		//BUG IS HIDDEN - collision problem - the problem is with movementSpeed - when it goes beside 0 - the player falls
 		if (collisionHeight == 660){
 			if (playerObject->currentState == 0 && !(alreadyTouched->getBody().getGlobalBounds().intersects(playerBody.getGlobalBounds()))){
 				// if player is actually standing on the current block 
 				playerObject->movementSpeed = 1;
-				playerObject->currentState  = 2;	//check if he will step of - if yes, change current state on falling - we use here only case for base blocks - it should work for both types
+				playerObject->currentState  = 2;
+				//check if he will step of - if yes, change current state on falling - we use here only case for base blocks - it should work for both types
 			}
 		}
 	;});
-	std::cout << playerObject->currentState << std::endl;
 }
 
 //------------------------------
@@ -98,7 +110,6 @@ void RelationsManager::checkCollision__Blocks(std::unique_ptr<IShape>&blockObj, 
 
 	currentBlocksCollision(blockObject->blocksVector, playerBody, playerObject, alreadyTouched, 660);
 	currentBlocksCollision(blockObject->upperBlocksVector, playerBody, playerObject, alreadyTouched, 458);
-
 }
 
 //OXYGEN BOTTLES RELATIONS--------------------------------------------
@@ -111,11 +122,10 @@ void RelationsManager::checkCollision__Oxygen(std::unique_ptr<IShape>& oxygenObj
 	sf::RectangleShape playerBody = playerObject->getBody();
 	if (!oxygenObject->oxygenBottlesVect.empty()){
 		oxygenObject->oxygenBottlesVect.erase(std::remove_if(oxygenObject->oxygenBottlesVect.begin(), oxygenObject->oxygenBottlesVect.end(), 
-		[&](const std::shared_ptr<Oxygen> obj)-> bool{ 
+		[&](const std::shared_ptr<Oxygen>& obj)-> bool{ 
 			return obj->getBottleBody().getGlobalBounds().intersects(playerBody.getGlobalBounds()); }), oxygenObject->oxygenBottlesVect.end());
 			oxygenObject->respawnCounter = 0;
 	}
-
 }
 
 //ATMOSPHERE RELATIONS--------------------------------------------------
@@ -135,8 +145,6 @@ void RelationsManager::checkCollision__Wind(std::unique_ptr<IShape>& windObj, st
 }
 
 void RelationsManager::checkCollision__Rain(std::unique_ptr<Rain> rainObject, std::unique_ptr<Player> playerObject){
-
-
 
 }
 
@@ -168,3 +176,4 @@ void RelationsManager::checkCollision__Coins(std::unique_ptr<IShape>& coinObj, s
 	}
 	
 }
+

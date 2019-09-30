@@ -107,7 +107,6 @@ void Blocks::eraseBlocks(){
 	if (result2 != upperBlocksVector.end()){
 		upperBlocksVector.erase(result2);
 	}
-
 }
 
 
@@ -128,7 +127,7 @@ void Blocks::draw(sf::RenderWindow& window){
 void Blocks::defineBehaviour(sf::RenderWindow& window){
 	if (name == "Blocks")
 		this->emplaceBlocks(window);
-	else if (name == "Upper blocks");
+	else if (name == "Upper blocks"); 
 		this->emplaceUpperBlocks(window);
 	this->setElementPosition();
 	this->eraseBlocks();

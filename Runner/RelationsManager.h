@@ -6,6 +6,7 @@
 #include "Wind.h"
 #include "Rain.h"
 #include "Coins.h"
+#include "Obstacles.h"
 #include <string>
 #include <functional>
 
@@ -26,6 +27,9 @@ class RelationsManager{
 		void checkCollision__Wind(std::unique_ptr<IShape>& windObj,  std::unique_ptr<IShape>& playerObj); //done
 	//PLAYER - COINS RELATIONS
 		void checkCollision__Coins(std::unique_ptr<IShape>& coinObj, std::unique_ptr<IShape>& playerObj);
+	//OBSTACLES - BLOCKS - PLAYER RELATIONS
+		void setObstaclePosition(std::unique_ptr<IShape>& obstacleObj, std::unique_ptr<Blocks>& blocksObj);
+		void checkCollision__Obstacles(std::unique_ptr<IShape>& obstacleObj, std::unique_ptr<IShape>& playerObj);
 	//STRATEGY 
 		std::unique_ptr<IShape> makeAlive(std::string name, sf::RenderWindow& window);
 		void setBehaviour(sf::RenderWindow& window, std::unique_ptr<IShape>& object);

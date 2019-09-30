@@ -1,12 +1,12 @@
 #pragma once
 #include "IShape.h"
+
 class Obstacles :public IShape{
 public:
-	Obstacles();
+	Obstacles()  = default;
 	Obstacles(const Obstacles&);
 	explicit Obstacles(std::string name);
-	Obstacles(sf::RenderWindow& window, std::string name);
-	~Obstacles();
+	~Obstacles() = default;
 public:
 	void move() override;
 	void setElementPosition()			override;
@@ -17,7 +17,7 @@ public:
 	void eraseObstacles();
 	void defineBehaviour(sf::RenderWindow& window) override;
 	float randomizeHeight();
-	sf::RectangleShape getBody();
+	float randomizeWidth();
 	std::string getName() override;
 public:
 	int respawnCounter;
@@ -27,8 +27,8 @@ public:
 	std::vector<std::unique_ptr<Obstacles>> obstaclesVector;
 	std::vector<std::unique_ptr<Obstacles>> bigObstaclesVector;
 	std::string name;
-private:
 	sf::RectangleShape obstacleBody;
+	sf::RectangleShape floorBody;
 	float movementSpeed;
 };
 

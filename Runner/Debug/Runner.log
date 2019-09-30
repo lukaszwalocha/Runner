@@ -1,2 +1,5 @@
 ﻿  Obstacles.cpp
+d:\documents\visual studio 2013\projects\runner\runner\obstacles.cpp(18): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+  Main.cpp
+  Generating Code...
   Runner.vcxproj -> d:\documents\visual studio 2013\Projects\Runner\Debug\Runner.exe
