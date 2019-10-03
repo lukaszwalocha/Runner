@@ -51,8 +51,8 @@ int main(){
 		relationsManager.checkCollision__Oxygen(oxygenObject, playerObject);
 		relationsManager.checkCollision__Wind(windObject, playerObject);
 		relationsManager.checkCollision__Coins(coinsObject, playerObject);
-		relationsManager.checkCollision__Blocks(upperBlockObject, playerObject, std::move(touchable));
-		relationsManager.checkCollision__Obstacles(obstaclesObject, playerObject, 660, std::move(touchableObst));
+		//relationsManager.checkCollision__Blocks(upperBlockObject, playerObject, std::move(touchable));
+		relationsManager.checkCollision__Obstacles(obstaclesObject, playerObject, 700, std::move(touchableObst));
 		
 		window.display();
 	}

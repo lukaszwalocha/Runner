@@ -66,8 +66,8 @@ void RelationsManager::setBehaviour(sf::RenderWindow& window, std::unique_ptr<IS
 //------------------------OBSTACLES RELATIONS
 
 
-std::shared_ptr<Obstacles> RelationsManager::getTouchableObstacle(){
-	std::shared_ptr<Obstacles> ptr = std::make_shared<Obstacles>();
+std::unique_ptr<Obstacles> RelationsManager::getTouchableObstacle(){
+	std::unique_ptr<Obstacles> ptr = std::make_unique<Obstacles>();
 
 	return ptr;
 }
@@ -78,6 +78,8 @@ void RelationsManager::checkCollision__Obstacles(std::unique_ptr<IShape>& obstac
 	Player* player      = static_cast<Player*>(playerObj.get());
 	
 	//There is a problem with blocks collision - it already manipulates player's state - add boolean flag to decide which collision takes place at current moment
+	//Should we use for_each with lambda to reference to current element? 
+	/*
 	for (auto& element : obstacle->obstaclesVector){
 		if (element->floorBody.getGlobalBounds().intersects(player->getBody().getGlobalBounds()) && 
 			player->getBody().getPosition().y <= collisionHeight && player->currentState == 2){
@@ -87,6 +89,25 @@ void RelationsManager::checkCollision__Obstacles(std::unique_ptr<IShape>& obstac
 		}
 
 	}
+	if (player->currentState == 0){
+		if (!player->getBody().getGlobalBounds().intersects(touchedObstacle->floorBody.getGlobalBounds())){
+			player->currentState = 2;
+			player->movementSpeed = 2;
+		}
+	}
+	*/
+
+	//ADD BOOLEAN FLAGS TO DECIDE WHICH COLLIDES IS ACTUALLY MANIPULATING PLAYER STATE
+	std::for_each(obstacle->obstaclesVector.cbegin(), obstacle->obstaclesVector.cend(), [&](const std::shared_ptr<Obstacles>& currentElement){
+		if (currentElement->floorBody.getGlobalBounds().intersects(player->getBody().getGlobalBounds()) && player->getBody().getPosition().y <= collisionHeight && player->currentState == 2){
+			player->movementSpeed = 3;
+			player->currentState = 0;
+			touchedObstacle = currentElement;
+			std::cout << "test" << std::endl;
+		}
+
+		; });
+
 	if (player->currentState == 0){
 		if (!player->getBody().getGlobalBounds().intersects(touchedObstacle->floorBody.getGlobalBounds())){
 			player->currentState = 2;
@@ -198,6 +219,5 @@ void RelationsManager::checkCollision__Coins(std::unique_ptr<IShape>& coinObj, s
 		coinObject->coinsVector.erase(resultOutOfScreen);
 	}
 	
-	std::cout << coinObject->coinsVector.size() << std::endl;
 }
 

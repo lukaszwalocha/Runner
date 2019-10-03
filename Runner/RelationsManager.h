@@ -30,7 +30,7 @@ class RelationsManager{
 	//OBSTACLES - BLOCKS - PLAYER RELATIONS
 		void setObstaclePosition(std::unique_ptr<IShape>& obstacleObj, std::unique_ptr<Blocks>& blocksObj);
 		void checkCollision__Obstacles(std::unique_ptr<IShape>& obstacleObj, std::unique_ptr<IShape>& playerObj, int collisionHeight, std::shared_ptr<Obstacles>& touchedObstacle);
-		std::shared_ptr<Obstacles> getTouchableObstacle();
+		std::unique_ptr<Obstacles> getTouchableObstacle();
 	//STRATEGY 
 		std::unique_ptr<IShape> makeAlive(std::string name, sf::RenderWindow& window);
 		void setBehaviour(sf::RenderWindow& window, std::unique_ptr<IShape>& object);

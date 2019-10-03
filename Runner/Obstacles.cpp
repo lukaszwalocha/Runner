@@ -49,7 +49,7 @@ void Obstacles::draw(sf::RenderWindow& window){
 void Obstacles::emplaceObstacles(sf::RenderWindow& window){
 	respawnCounter++;
 	if (respawnCounter > 200){
-		std::unique_ptr<Obstacles> newElement = std::make_unique<Obstacles>("Obstacle");
+		std::shared_ptr<Obstacles> newElement = std::make_shared<Obstacles>("Obstacle");
 		obstaclesVector.emplace_back(std::move(newElement));
 		respawnCounter = 0;
 	}
@@ -59,7 +59,7 @@ void Obstacles::emplaceBigObstacles(sf::RenderWindow& window){
 	
 }
 void Obstacles::eraseObstacles(){
-	auto result = std::find_if(obstaclesVector.begin(), obstaclesVector.end(), [](const std::unique_ptr<Obstacles>& element){
+	auto result = std::find_if(obstaclesVector.begin(), obstaclesVector.end(), [](const std::shared_ptr<Obstacles>& element){
 				  return element->obstacleBody.getPosition().x < 0 - element->obstacleBody.getSize().x &&
 				  element->floorBody.getPosition().x < 0 - element->floorBody.getSize().x;});
 	if (result != obstaclesVector.end()){

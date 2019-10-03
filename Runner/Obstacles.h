@@ -24,8 +24,8 @@ public:
 	int respawnCounter__Big;
 	float obstacleWidth;
 	float obstacleHeight;
-	std::vector<std::unique_ptr<Obstacles>> obstaclesVector;
-	std::vector<std::unique_ptr<Obstacles>> bigObstaclesVector;
+	std::vector<std::shared_ptr<Obstacles>> obstaclesVector;
+	std::vector<std::shared_ptr<Obstacles>> bigObstaclesVector;
 	std::string name;
 	sf::RectangleShape obstacleBody;
 	sf::RectangleShape floorBody;
