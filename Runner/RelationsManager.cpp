@@ -1,15 +1,6 @@
 #include "RelationsManager.h"
 
 
-RelationsManager::RelationsManager()
-{
-}
-
-
-RelationsManager::~RelationsManager()
-{
-}
-
 std::unique_ptr<IShape> RelationsManager::makeAlive(std::string name , sf::RenderWindow& window){
 
 	std::unique_ptr<IShape> newObject = nullptr;
@@ -74,42 +65,49 @@ void RelationsManager::setBehaviour(sf::RenderWindow& window, std::unique_ptr<IS
 
 //------------------------OBSTACLES RELATIONS
 
+std::shared_ptr<Blocks> alreadyTouched = std::make_shared<Blocks>();
+
 void checkCollision__Obstacles(std::unique_ptr<IShape>& obstacleObj, std::unique_ptr<IShape>& playerObj){
+
+}
+std::shared_ptr<Blocks>RelationsManager::getTouchable(){
+
+	std::shared_ptr<Blocks> ptr = std::make_shared<Blocks>();
+
+	return ptr;
 
 }
 //SUBFUNCTION FOR CHECKING BOTH TYPES BLOCK COLLISIONS
 void RelationsManager::currentBlocksCollision(std::vector<std::shared_ptr<Blocks>>& blocksVect, 
-	                                          sf::RectangleShape& playerBody, Player* playerObject, 
-	                                          std::shared_ptr<Blocks>& alreadyTouched, int collisionHeight){
-	std::for_each(blocksVect.begin(), blocksVect.end(), [&](const std::shared_ptr<Blocks>& currentElement){
+	                                          sf::RectangleShape& playerBody, Player* playerObject, int collisionHeight, std::shared_ptr<Blocks>& alreadyTouched){
+
+	std::for_each(blocksVect.cbegin(), blocksVect.cend(), [&](const std::shared_ptr<Blocks>& currentElement){
 		if (currentElement->getBody().getGlobalBounds().intersects(playerBody.getGlobalBounds()) && playerBody.getPosition().y <= collisionHeight && playerObject->currentState == 2){
-			playerObject->movementSpeed = 3;             //for every block in vector check if playerbody and blocks object collides.
-			playerObject->currentState  = 0;              // if yes, and the playerbody position is less or equal to top position of block, change actual state
-			alreadyTouched              = currentElement; //the block on which the player is actually standing
+			playerObject->movementSpeed = 3;
+			playerObject->currentState = 0;
+			alreadyTouched = currentElement;
 		}
-		//BUG IS HIDDEN - collision problem - the problem is with movementSpeed - when it goes beside 0 - the player falls
-		if (collisionHeight == 660){
-			if (playerObject->currentState == 0 && !(alreadyTouched->getBody().getGlobalBounds().intersects(playerBody.getGlobalBounds()))){
-				// if player is actually standing on the current block 
-				playerObject->movementSpeed = 1;
-				playerObject->currentState  = 2;
-				//check if he will step of - if yes, change current state on falling - we use here only case for base blocks - it should work for both types
-			}
-		}
+
 	;});
+
+	if (playerObject->currentState == 0){
+		if (!playerObject->getBody().getGlobalBounds().intersects(alreadyTouched->getBody().getGlobalBounds())){
+			playerObject->currentState  = 2;
+			playerObject->movementSpeed = 2;
+		}
+	}
 }
 
 //------------------------------
-void RelationsManager::checkCollision__Blocks(std::unique_ptr<IShape>&blockObj, std::unique_ptr<IShape>&playerObj){
+void RelationsManager::checkCollision__Blocks(std::unique_ptr<IShape>&blockObj, std::unique_ptr<IShape>&playerObj, std::shared_ptr<Blocks>& alreadyTouched){
 	
 	Player* playerObject = static_cast<Player*>(playerObj.get());
 	Blocks* blockObject  = static_cast<Blocks*>(blockObj.get());
 
 	sf::RectangleShape playerBody          = playerObject->getBody();
-	std::shared_ptr<Blocks> alreadyTouched = std::make_shared<Blocks>();
-
-	currentBlocksCollision(blockObject->blocksVector, playerBody, playerObject, alreadyTouched, 660);
-	currentBlocksCollision(blockObject->upperBlocksVector, playerBody, playerObject, alreadyTouched, 458);
+	
+	currentBlocksCollision(blockObject->blocksVector, playerBody, playerObject, 660, alreadyTouched);
+	currentBlocksCollision(blockObject->upperBlocksVector, playerBody, playerObject, 458, alreadyTouched);
 }
 
 //OXYGEN BOTTLES RELATIONS--------------------------------------------
@@ -157,11 +155,11 @@ void RelationsManager::checkCollision__Coins(std::unique_ptr<IShape>& coinObj, s
 	sf::RectangleShape playerBody = playerObject->getBody();
 	int dissapearType = 0;
 
-	auto resultCollision   = std::find_if(coinObject->coinsVector.begin(), coinObject->coinsVector.end(), 
+	auto resultCollision   = std::find_if(coinObject->coinsVector.cbegin(), coinObject->coinsVector.cend(), 
 						     [&](const std::unique_ptr<Coins>& coinObject){ 
 				             return coinObject->coinBody.getGlobalBounds().intersects(playerBody.getGlobalBounds());});
 
-	auto resultOutOfScreen = std::find_if(coinObject->coinsVector.begin(), coinObject->coinsVector.end(), 
+	auto resultOutOfScreen = std::find_if(coinObject->coinsVector.cbegin(), coinObject->coinsVector.cend(), 
 				             [&](const std::unique_ptr<Coins>& coinObject){
 				             return coinObject->coinBody.getPosition().x < 0;});
 
@@ -175,5 +173,6 @@ void RelationsManager::checkCollision__Coins(std::unique_ptr<IShape>& coinObj, s
 		coinObject->coinsVector.erase(resultOutOfScreen);
 	}
 	
+	std::cout << coinObject->coinsVector.size() << std::endl;
 }
 

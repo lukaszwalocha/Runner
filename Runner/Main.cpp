@@ -15,6 +15,9 @@ int main(){
 	window.setFramerateLimit(120);
 	//OBJECTS
 	RelationsManager relationsManager;
+	//
+	std::shared_ptr<Blocks> touchable = relationsManager.getTouchable();
+	//GAME OBJECTS
 	std::unique_ptr<IShape> playerObject     = relationsManager.makeAlive("Player", window);
 	std::unique_ptr<IShape> enemyObject      = relationsManager.makeAlive("Enemy", window);
 	std::unique_ptr<IShape> blocksObject     = relationsManager.makeAlive("Blocks", window);
@@ -43,11 +46,11 @@ int main(){
 		coinsObject      -> defineBehaviour(window);
 		obstaclesObject  -> defineBehaviour(window);
 
-		relationsManager.checkCollision__Blocks(blocksObject, playerObject);
+		relationsManager.checkCollision__Blocks(blocksObject, playerObject, std::move(touchable));
 		relationsManager.checkCollision__Oxygen(oxygenObject, playerObject);
 		relationsManager.checkCollision__Wind(windObject, playerObject);
 		relationsManager.checkCollision__Coins(coinsObject, playerObject);
-		relationsManager.checkCollision__Blocks(upperBlockObject, playerObject);
+		relationsManager.checkCollision__Blocks(upperBlockObject, playerObject, std::move(touchable));
 
 		
 		window.display();

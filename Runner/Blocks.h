@@ -28,8 +28,8 @@ class Blocks:public IShape{
 		std::vector<std::shared_ptr<Blocks>> blocksVector;
 		std::vector<std::shared_ptr<Blocks>> upperBlocksVector;
 		std::string name;
-	private:
 		sf::RectangleShape blockBody;
+	private:
 		float movementSpeed;
 };
 

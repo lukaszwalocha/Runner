@@ -12,14 +12,14 @@
 
 class RelationsManager{
 	public:
-		RelationsManager();
-		~RelationsManager();
+		RelationsManager()  = default;
+		~RelationsManager() = default;
 	public:
 	//BLOCKS - PLAYER RELATIONS
-		void checkCollision__Blocks(std::unique_ptr<IShape>&blocksObj, std::unique_ptr<IShape>&playerObj); // done
+		void checkCollision__Blocks(std::unique_ptr<IShape>&blocksObj, std::unique_ptr<IShape>&playerObj, std::shared_ptr<Blocks>& alreadyTouched); // done
 		void currentBlocksCollision(std::vector<std::shared_ptr<Blocks>>& blocksVect, 
-			                        sf::RectangleShape& playerBody, Player* playerObject, 
-			                        std::shared_ptr<Blocks>& alreadyTouched, int collisionHeight);
+			sf::RectangleShape& playerBody, Player* playerObject, int collisionHeight, std::shared_ptr<Blocks>& alreadyTouched);
+		std::shared_ptr<Blocks> getTouchable();
 	//OXYGEN BOTTLES  - PLAYER RELATIONS
 		void checkCollision__Oxygen(std::unique_ptr<IShape>&oxygenObj, std::unique_ptr<IShape>&playerObj); // done
 	//ATMOSPHERE RELATIONS
