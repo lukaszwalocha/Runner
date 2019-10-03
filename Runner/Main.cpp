@@ -5,7 +5,7 @@
 #include "Enemy.h"
 #include "RelationsManager.h"
 #include <memory>
-//Design patterns - state and strategy
+//Design patterns - state, strategy, factory
 
 
 int main(){
@@ -16,7 +16,8 @@ int main(){
 	//OBJECTS
 	RelationsManager relationsManager;
 	//
-	std::shared_ptr<Blocks> touchable = relationsManager.getTouchable();
+	std::shared_ptr<Blocks> touchable        = relationsManager.getTouchable();
+	std::shared_ptr<Obstacles>touchableObst  = relationsManager.getTouchableObstacle();
 	//GAME OBJECTS
 	std::unique_ptr<IShape> playerObject     = relationsManager.makeAlive("Player", window);
 	std::unique_ptr<IShape> enemyObject      = relationsManager.makeAlive("Enemy", window);
@@ -36,6 +37,7 @@ int main(){
 		}
 		
 		window.clear();
+		obstaclesObject  -> defineBehaviour(window);
 		upperBlockObject -> defineBehaviour(window);
 		playerObject     -> defineBehaviour(window);
 		enemyObject      -> defineBehaviour(window);
@@ -44,19 +46,15 @@ int main(){
 		rainObject       -> defineBehaviour(window);
 		windObject       -> defineBehaviour(window);
 		coinsObject      -> defineBehaviour(window);
-		obstaclesObject  -> defineBehaviour(window);
 
 		relationsManager.checkCollision__Blocks(blocksObject, playerObject, std::move(touchable));
 		relationsManager.checkCollision__Oxygen(oxygenObject, playerObject);
 		relationsManager.checkCollision__Wind(windObject, playerObject);
 		relationsManager.checkCollision__Coins(coinsObject, playerObject);
 		relationsManager.checkCollision__Blocks(upperBlockObject, playerObject, std::move(touchable));
-
+		relationsManager.checkCollision__Obstacles(obstaclesObject, playerObject, 660, std::move(touchableObst));
 		
 		window.display();
-		
 	}
-
-
 	return 0;
 }

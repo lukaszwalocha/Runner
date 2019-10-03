@@ -9,7 +9,7 @@ Obstacles::Obstacles(std::string name){
 	this->name = name;
 	this->setMovementSpeed();
 	this->obstacleHeight = randomizeHeight();
-	this->obstacleBody.setFillColor(sf::Color::White);
+	this->obstacleBody.setFillColor(sf::Color::Magenta);
 	this->obstacleBody.setSize(sf::Vector2f(randomizeWidth(), 150.0f));
 	this->obstacleBody.setPosition(sf::Vector2f(1084.0f, 700.0f - this->obstacleBody.getSize().y));
 
@@ -84,7 +84,7 @@ float Obstacles::randomizeWidth(){
 	float randomizedNumb = 0;
 	std::random_device device;
 	std::mt19937 generator(device());
-	std::uniform_real_distribution<float> distribution(30, 220);
+	std::uniform_real_distribution<float> distribution(30, 120);
 	randomizedNumb = distribution(generator);
 
 	return randomizedNumb;

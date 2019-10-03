@@ -65,10 +65,35 @@ void RelationsManager::setBehaviour(sf::RenderWindow& window, std::unique_ptr<IS
 
 //------------------------OBSTACLES RELATIONS
 
-std::shared_ptr<Blocks> alreadyTouched = std::make_shared<Blocks>();
 
-void checkCollision__Obstacles(std::unique_ptr<IShape>& obstacleObj, std::unique_ptr<IShape>& playerObj){
+std::shared_ptr<Obstacles> RelationsManager::getTouchableObstacle(){
+	std::shared_ptr<Obstacles> ptr = std::make_shared<Obstacles>();
 
+	return ptr;
+}
+
+
+void RelationsManager::checkCollision__Obstacles(std::unique_ptr<IShape>& obstacleObj, std::unique_ptr<IShape>& playerObj, int collisionHeight, std::shared_ptr<Obstacles>& touchedObstacle){
+	Obstacles* obstacle = static_cast<Obstacles*>(obstacleObj.get());
+	Player* player      = static_cast<Player*>(playerObj.get());
+	
+	//There is a problem with blocks collision - it already manipulates player's state - add boolean flag to decide which collision takes place at current moment
+	for (auto& element : obstacle->obstaclesVector){
+		if (element->floorBody.getGlobalBounds().intersects(player->getBody().getGlobalBounds()) && 
+			player->getBody().getPosition().y <= collisionHeight && player->currentState == 2){
+			player->movementSpeed = 3;
+			player->currentState = 0;
+			touchedObstacle = std::move(element);
+		}
+
+	}
+	if (player->currentState == 0){
+		if (!player->getBody().getGlobalBounds().intersects(touchedObstacle->floorBody.getGlobalBounds())){
+			player->currentState = 2;
+			player->movementSpeed = 2;
+		}
+	}
+	
 }
 std::shared_ptr<Blocks>RelationsManager::getTouchable(){
 
