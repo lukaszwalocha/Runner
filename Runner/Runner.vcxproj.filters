@@ -36,9 +36,6 @@
     <ClCompile Include="RelationsManager.cpp">
       <Filter>Header Files\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Wind.cpp">
-      <Filter>Header Files\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Rain.cpp">
       <Filter>Header Files\Source Files</Filter>
     </ClCompile>
@@ -47,6 +44,9 @@
     </ClCompile>
     <ClCompile Include="Obstacles.cpp">
       <Filter>Header Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Wind.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

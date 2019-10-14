@@ -16,9 +16,12 @@ class RelationsManager{
 		~RelationsManager() = default;
 	public:
 	//BLOCKS - PLAYER RELATIONS
-		void checkCollision__Blocks(std::unique_ptr<IShape>&blocksObj, std::unique_ptr<IShape>&playerObj, std::shared_ptr<Blocks>& alreadyTouched); // done
-		void currentBlocksCollision(std::vector<std::shared_ptr<Blocks>>& blocksVect, 
-			sf::RectangleShape& playerBody, Player* playerObject, int collisionHeight, std::shared_ptr<Blocks>& alreadyTouched);
+		void checkCollision__Blocks__Obstacles(std::unique_ptr<IShape>&blocksObj, std::unique_ptr<IShape>&playerObj, std::unique_ptr<IShape>& obstacleObj, std::shared_ptr<Blocks>& alreadyTouched,
+			                                   std::shared_ptr<Obstacles>& alreadyTouched__Obstacle); // done
+		void currentBigBlocksCollision(std::vector<std::shared_ptr<Blocks>>& bigBlocksVect, sf::RectangleShape& playerBody, Player* playerObject,
+			                           int collisionHeight, std::shared_ptr<Blocks>& alreadyTouched);
+		void currentBlocksCollision(std::vector<std::shared_ptr<Blocks>>& blocksVect, sf::RectangleShape& playerBody, Player* playerObject,
+			                                 int collisionHeight, std::shared_ptr<Blocks>& alreadyTouched, bool& collisionBool);
 		std::shared_ptr<Blocks> getTouchable();
 	//OXYGEN BOTTLES  - PLAYER RELATIONS
 		void checkCollision__Oxygen(std::unique_ptr<IShape>&oxygenObj, std::unique_ptr<IShape>&playerObj); // done

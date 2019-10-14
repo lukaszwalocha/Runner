@@ -23,6 +23,7 @@ int main(){
 	std::unique_ptr<IShape> enemyObject      = relationsManager.makeAlive("Enemy", window);
 	std::unique_ptr<IShape> blocksObject     = relationsManager.makeAlive("Blocks", window);
 	std::unique_ptr<IShape> upperBlockObject = relationsManager.makeAlive("Upper blocks", window);
+	std::unique_ptr<IShape> bigBlockObject   = relationsManager.makeAlive("Big blocks", window);
 	std::unique_ptr<IShape> oxygenObject     = relationsManager.makeAlive("Oxygen", window);
 	std::unique_ptr<IShape> rainObject       = relationsManager.makeAlive("Rain", window);
 	std::unique_ptr<IShape> windObject       = relationsManager.makeAlive("Wind", window);
@@ -42,17 +43,19 @@ int main(){
 		playerObject     -> defineBehaviour(window);
 		enemyObject      -> defineBehaviour(window);
 		blocksObject     -> defineBehaviour(window);
+		bigBlockObject   -> defineBehaviour(window);
 		oxygenObject     -> defineBehaviour(window);
 		rainObject       -> defineBehaviour(window);
 		windObject       -> defineBehaviour(window);
 		coinsObject      -> defineBehaviour(window);
 
-		relationsManager.checkCollision__Blocks(blocksObject, playerObject, std::move(touchable));
+		relationsManager.checkCollision__Blocks__Obstacles(blocksObject, playerObject, obstaclesObject, std::move(touchable), std::move(touchableObst));
 		relationsManager.checkCollision__Oxygen(oxygenObject, playerObject);
 		relationsManager.checkCollision__Wind(windObject, playerObject);
 		relationsManager.checkCollision__Coins(coinsObject, playerObject);
-		//relationsManager.checkCollision__Blocks(upperBlockObject, playerObject, std::move(touchable));
-		relationsManager.checkCollision__Obstacles(obstaclesObject, playerObject, 700, std::move(touchableObst));
+		relationsManager.checkCollision__Blocks__Obstacles(upperBlockObject, playerObject, obstaclesObject, touchable, touchableObst);
+		relationsManager.checkCollision__Blocks__Obstacles(bigBlockObject, playerObject, obstaclesObject, std::move(touchable), std::move(touchableObst));
+		//relationsManager.checkCollision__Obstacles(obstaclesObject, playerObject, 700, std::move(touchableObst));
 		
 		window.display();
 	}
