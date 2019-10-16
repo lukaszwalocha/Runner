@@ -88,6 +88,7 @@
     <ClCompile Include="Coins.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="IShape.cpp" />
+    <ClCompile Include="LogicUtilities.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Obstacles.cpp" />
     <ClCompile Include="Oxygen.cpp" />
@@ -101,6 +102,7 @@
     <ClInclude Include="Coins.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="IShape.h" />
+    <ClInclude Include="LogicUtilities.h" />
     <ClInclude Include="Obstacles.h" />
     <ClInclude Include="Oxygen.h" />
     <ClInclude Include="Player.h" />

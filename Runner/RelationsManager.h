@@ -7,6 +7,7 @@
 #include "Rain.h"
 #include "Coins.h"
 #include "Obstacles.h"
+#include "LogicUtilities.h"
 #include <string>
 #include <functional>
 

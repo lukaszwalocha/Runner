@@ -48,6 +48,9 @@
     <ClCompile Include="Wind.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="LogicUtilities.cpp">
+      <Filter>Header Files\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IShape.h">
@@ -79,6 +82,9 @@
     </ClInclude>
     <ClInclude Include="Obstacles.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LogicUtilities.h">
+      <Filter>Header Files\Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

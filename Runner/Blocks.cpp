@@ -88,6 +88,8 @@ void Blocks::emplaceUpperBlocks(sf::RenderWindow& window){
 		upperBlocksVector.emplace_back(std::move(newUpperBlock));
 		respawnCounter__upper = 0;
 	}
+	if (!this->upperBlocksVector.empty())
+		std::cout << this->upperBlocksVector.back()->blockBody.getPosition().y << std::endl;
 }
 
 void Blocks::emplaceBlocks(sf::RenderWindow& window){
