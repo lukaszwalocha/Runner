@@ -22,7 +22,22 @@ namespace LogicUtils{
 		}
 	}
 	
-	void changeStatsStepDown(){
+	void changeStatsStepDown(std::vector<std::shared_ptr<Blocks>>& blocksVect, std::shared_ptr<Blocks>& alreadyTouched, Player* playerObject,
+		                     sf::RectangleShape& playerBody, bool& collisionBool){
 
+		if (blocksVect.back()->name == "Blocks" || blocksVect.back()->name == "Upper blocks" ){
+			if (!playerBody.getGlobalBounds().intersects(alreadyTouched->getBody().getGlobalBounds())){
+				playerObject->currentState  = 2;
+				playerObject->movementSpeed = 2;
+				collisionBool = false;
+			}
+		}
+		if (blocksVect.back()->name == "Big blocks"){
+			if (!playerBody.getGlobalBounds().intersects(alreadyTouched->bigBlockBody.getGlobalBounds())){
+				playerObject->currentState  = 2;
+				playerObject->movementSpeed = 2;
+				collisionBool = false;
+			}
+		}
 	}
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "IShape.h"
+//#include "LogicUtilities.h"
 
 class Player:public IShape{
 	public:
@@ -18,6 +19,7 @@ class Player:public IShape{
 		int currentState;
 		float movementSpeed;
 		bool windCollides;
+		bool obstacleWallCollides;
 		int  windTouchCounter;
 		std::string name;
 	private:

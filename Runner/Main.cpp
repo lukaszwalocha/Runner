@@ -17,7 +17,6 @@ int main(){
 	RelationsManager relationsManager;
 	//
 	std::shared_ptr<Blocks> touchable        = relationsManager.getTouchable();
-	std::shared_ptr<Obstacles>touchableObst  = relationsManager.getTouchableObstacle();
 	//GAME OBJECTS
 	std::unique_ptr<IShape> playerObject     = relationsManager.makeAlive("Player", window);
 	std::unique_ptr<IShape> enemyObject      = relationsManager.makeAlive("Enemy", window);
@@ -49,13 +48,12 @@ int main(){
 		windObject       -> defineBehaviour(window);
 		coinsObject      -> defineBehaviour(window);
 
-		relationsManager.checkCollision__Blocks__Obstacles(blocksObject, playerObject, obstaclesObject, std::move(touchable), std::move(touchableObst));
+		relationsManager.checkCollision__Blocks__Obstacles(blocksObject, playerObject, obstaclesObject, std::move(touchable));
 		relationsManager.checkCollision__Oxygen(oxygenObject, playerObject);
 		relationsManager.checkCollision__Wind(windObject, playerObject);
 		relationsManager.checkCollision__Coins(coinsObject, playerObject);
-		relationsManager.checkCollision__Blocks__Obstacles(upperBlockObject, playerObject, obstaclesObject, touchable, touchableObst);
-		relationsManager.checkCollision__Blocks__Obstacles(bigBlockObject, playerObject, obstaclesObject, std::move(touchable), std::move(touchableObst));
-		//relationsManager.checkCollision__Obstacles(obstaclesObject, playerObject, 700, std::move(touchableObst));
+		relationsManager.checkCollision__Blocks__Obstacles(upperBlockObject, playerObject, obstaclesObject, touchable);
+		relationsManager.checkCollision__Blocks__Obstacles(bigBlockObject, playerObject, obstaclesObject, std::move(touchable));
 		
 		window.display();
 	}

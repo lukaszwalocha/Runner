@@ -9,9 +9,10 @@ Player::Player(std::string name)
 	this->setElementPosition();
 	this->setMovementSpeed();
 	this->playerBody.setSize(sf::Vector2f(20.0f, 45.0f));
-	this->currentState     = 10;
-	this->windTouchCounter = 100;
-	this->windCollides     = false;
+	this->currentState         = 10;
+	this->windTouchCounter     = 100;
+	this->windCollides         = false;
+	this->obstacleWallCollides = false;
 }
 
 Player::~Player()
@@ -35,7 +36,7 @@ void Player::move(){
 	//MOVING LEFT AND RIGHT
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)      && this->playerBody.getPosition().x > 10)
 		playerBody.move (-2, 0);
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)&& this->playerBody.getPosition().x < 1000)
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) && this->playerBody.getPosition().x < 1000 && this->obstacleWallCollides == false)
 		playerBody.move(1.5, 0);
 	//START JUMP
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && currentState !=2)
@@ -56,6 +57,10 @@ void Player::move(){
 		default:
 			playerBody.move(0, 0);				  break; 
 	}
+
+	//collision effects
+	if (this->obstacleWallCollides == true)
+		playerBody.move(-2.5, 0);
 }
 
 void Player::setElementPosition(){

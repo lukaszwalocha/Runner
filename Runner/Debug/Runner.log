@@ -1,2 +1,4 @@
-﻿  RelationsManager.cpp
+﻿  Player.cpp
+d:\documents\visual studio 2013\projects\runner\runner\player.cpp(52): warning C4305: '-=' : truncation from 'double' to 'float'
+d:\documents\visual studio 2013\projects\runner\runner\player.cpp(55): warning C4305: '+=' : truncation from 'double' to 'float'
   Runner.vcxproj -> d:\documents\visual studio 2013\Projects\Runner\Debug\Runner.exe

@@ -1,6 +1,5 @@
 #include "RelationsManager.h"
 
-
 namespace collisionBools{
 	//Blocks
 	bool isBigBlockCollide = false;
@@ -60,7 +59,7 @@ std::unique_ptr<IShape> RelationsManager::makeAlive(std::string name , sf::Rende
 		case 8:
 			newObject = std::make_unique<Blocks>("Upper blocks");   break;
 		case 9:
-			newObject = std::make_unique<Obstacles>("Obstacle");	break;
+			//newObject = std::make_unique<Obstacles>("Obstacle");	break;
 		case 10:
 			newObject = std::make_unique<Blocks>(window, "Big blocks"); break;
 		default: break;
@@ -76,13 +75,6 @@ void RelationsManager::setBehaviour(sf::RenderWindow& window, std::unique_ptr<IS
 
 //------------------------OBSTACLES RELATIONS
 
-
-std::unique_ptr<Obstacles> RelationsManager::getTouchableObstacle(){
-	std::unique_ptr<Obstacles> ptr = std::make_unique<Obstacles>();
-
-	return ptr;
-}
-
 std::shared_ptr<Blocks>RelationsManager::getTouchable(){
 
 	std::shared_ptr<Blocks> ptr = std::make_shared<Blocks>();
@@ -91,54 +83,45 @@ std::shared_ptr<Blocks>RelationsManager::getTouchable(){
 }
 
 
-
 //SUBFUNCTION FOR CHECKING BOTH TYPES BLOCK COLLISIONS
 void RelationsManager::currentBlocksCollision(std::vector<std::shared_ptr<Blocks>>& blocksVect, sf::RectangleShape& playerBody, 
 	Player* playerObject, int collisionHeight, std::shared_ptr<Blocks>& alreadyTouched, bool& collisionBool){
 
-
 	if (!blocksVect.empty()){
-		
 		std::for_each(blocksVect.begin(), blocksVect.end(), [&](const std::shared_ptr<Blocks>& currentElement){
 	                                                         LogicUtils::changeStatsCollision(blocksVect, playerObject, 
 															 alreadyTouched, currentElement, collisionBool, collisionHeight, playerBody);});
-
-		if (playerObject->currentState == 0 && collisionBool){ // TODO - refactorize it as a function like this /\
-			if (blocksVect.back()->name == "Blocks" || blocksVect.back()->name == "Upper blocks"){
-				if (!playerBody.getGlobalBounds().intersects(alreadyTouched->getBody().getGlobalBounds())){
-					playerObject->currentState = 2;
-					playerObject->movementSpeed = 2;
-					collisionBool = false;
-				}
-			}
-			if (blocksVect.back()->name == "Big blocks"){
-				if (!playerBody.getGlobalBounds().intersects(alreadyTouched->bigBlockBody.getGlobalBounds())){
-					playerObject->currentState = 2;
-					playerObject->movementSpeed = 2;
-					collisionBool = false;
-				}
-			}
-		}
+		if (playerObject->currentState == 0 && collisionBool)
+			LogicUtils::changeStatsStepDown(blocksVect, alreadyTouched, playerObject, playerBody, collisionBool);
 	}
 }
 
 //------------------------------
-void RelationsManager::checkCollision__Blocks__Obstacles(std::unique_ptr<IShape>&blockObj, std::unique_ptr<IShape>&playerObj, std::unique_ptr<IShape>& obstacleObj, std::shared_ptr<Blocks>& alreadyTouched,
-	std::shared_ptr<Obstacles>& alreadyTouched__Obstacle){
+void RelationsManager::checkCollision__Blocks__Obstacles(std::unique_ptr<IShape>&blockObj, std::unique_ptr<IShape>&playerObj, std::unique_ptr<IShape>& obstacleObj, std::shared_ptr<Blocks>& alreadyTouched){
 	
 	Player* playerObject      = static_cast<Player*>(playerObj.get());
 	Blocks* blockObject       = static_cast<Blocks*>(blockObj.get());
-	Obstacles* obstacleObject = static_cast<Obstacles*>(obstacleObj.get());
-
-
-	sf::RectangleShape playerBody          = playerObject->getBody();
+	
+	sf::RectangleShape playerBody = playerObject->getBody();
 	
 	currentBlocksCollision(blockObject->blocksVector, playerBody, playerObject, 660, alreadyTouched, collisionBools::isNormalBlockCollide);
 	currentBlocksCollision(blockObject->upperBlocksVector, playerBody, playerObject, 465, alreadyTouched, collisionBools::isNormalBlockCollide);
-	currentBlocksCollision(blockObject->bigBlocksVector, playerBody, playerObject, 545, alreadyTouched, collisionBools::isBigBlockCollide);
+	currentBlocksCollision(blockObject->bigBlocksVector, playerBody, playerObject, 508, alreadyTouched, collisionBools::isBigBlockCollide);
 	
-	if (!blockObject->bigBlocksVector.empty())
-		std::cout << blockObject->upperBlocksVector.back()->blockBody.getPosition().y << std::endl;
+	//if (!blockObject->bigBlocksVector.empty())
+		//std::cout << blockObject->upperBlocksVector.back()->blockBody.getPosition().y << std::endl;
+	//check if big obstacle can push player
+
+	auto res = std::find_if(blockObject->bigBlocksVector.begin(), blockObject->bigBlocksVector.end(), [&playerBody](std::shared_ptr<Blocks> &currentElement){ 
+		return currentElement->bigBlockBody.getGlobalBounds().intersects(playerBody.getGlobalBounds());});
+	if (res != blockObject->bigBlocksVector.end()){
+		if (playerBody.getPosition().y > 508)
+			playerObject->obstacleWallCollides = true;
+		else 
+			playerObject->obstacleWallCollides = false;
+	}
+	else
+		playerObject->obstacleWallCollides = false;
 }
 
 //OXYGEN BOTTLES RELATIONS--------------------------------------------
@@ -197,7 +180,7 @@ void RelationsManager::checkCollision__Coins(std::unique_ptr<IShape>& coinObj, s
 	if (resultCollision != coinObject->coinsVector.end()){
 		dissapearType = 1;
 		coinObject->coinsVector.erase(resultCollision);
-		//here we wil add points collection later :)
+		//here we will add points collection later :)
 	}
 	else if (resultOutOfScreen != coinObject->coinsVector.end()){
 		dissapearType = 2;
