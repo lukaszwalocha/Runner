@@ -48,12 +48,13 @@ int main(){
 		windObject       -> defineBehaviour(window);
 		coinsObject      -> defineBehaviour(window);
 
-		relationsManager.checkCollision__Blocks__Obstacles(blocksObject, playerObject, obstaclesObject, std::move(touchable));
+		//relationsManager.checkCollision__Blocks__Obstacles(blocksObject, playerObject, obstaclesObject, std::move(touchable));
 		relationsManager.checkCollision__Oxygen(oxygenObject, playerObject);
 		relationsManager.checkCollision__Wind(windObject, playerObject);
 		relationsManager.checkCollision__Coins(coinsObject, playerObject);
-		relationsManager.checkCollision__Blocks__Obstacles(upperBlockObject, playerObject, obstaclesObject, touchable);
-		relationsManager.checkCollision__Blocks__Obstacles(bigBlockObject, playerObject, obstaclesObject, std::move(touchable));
+		relationsManager.checkBlocksCollision(blocksObject, playerObject);
+		//relationsManager.checkCollision__Blocks__Obstacles(upperBlockObject, playerObject, obstaclesObject, touchable);
+		//relationsManager.checkCollision__Blocks__Obstacles(bigBlockObject, playerObject, obstaclesObject, std::move(touchable));
 		
 		window.display();
 	}

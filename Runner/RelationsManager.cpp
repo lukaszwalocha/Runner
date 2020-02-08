@@ -104,9 +104,9 @@ void RelationsManager::checkCollision__Blocks__Obstacles(std::unique_ptr<IShape>
 	
 	sf::RectangleShape playerBody = playerObject->getBody();
 	
-	currentBlocksCollision(blockObject->blocksVector, playerBody, playerObject, 660, alreadyTouched, collisionBools::isNormalBlockCollide);
+	currentBlocksCollision(blockObject->blocksVector, playerBody, playerObject, 665, alreadyTouched, collisionBools::isNormalBlockCollide);
 	currentBlocksCollision(blockObject->upperBlocksVector, playerBody, playerObject, 465, alreadyTouched, collisionBools::isNormalBlockCollide);
-	currentBlocksCollision(blockObject->bigBlocksVector, playerBody, playerObject, 508, alreadyTouched, collisionBools::isBigBlockCollide);
+	currentBlocksCollision(blockObject->bigBlocksVector, playerBody, playerObject, 509, alreadyTouched, collisionBools::isBigBlockCollide);
 	
 	//if (!blockObject->bigBlocksVector.empty())
 		//std::cout << blockObject->upperBlocksVector.back()->blockBody.getPosition().y << std::endl;
@@ -115,7 +115,7 @@ void RelationsManager::checkCollision__Blocks__Obstacles(std::unique_ptr<IShape>
 	auto res = std::find_if(blockObject->bigBlocksVector.begin(), blockObject->bigBlocksVector.end(), [&playerBody](std::shared_ptr<Blocks> &currentElement){ 
 		return currentElement->bigBlockBody.getGlobalBounds().intersects(playerBody.getGlobalBounds());});
 	if (res != blockObject->bigBlocksVector.end()){
-		if (playerBody.getPosition().y > 508)
+		if (playerBody.getPosition().y > 520)
 			playerObject->obstacleWallCollides = true;
 		else 
 			playerObject->obstacleWallCollides = false;
@@ -187,5 +187,34 @@ void RelationsManager::checkCollision__Coins(std::unique_ptr<IShape>& coinObj, s
 		coinObject->coinsVector.erase(resultOutOfScreen);
 	}
 	
+}
+
+void RelationsManager::checkBlocksCollision(std::unique_ptr<IShape>& blockObj, std::unique_ptr<IShape>& playerObj){
+	
+	Blocks* blockObject = static_cast<Blocks*>(blockObj.get());
+	Player* playerObject = static_cast<Player*>(playerObj.get());
+
+	std::shared_ptr<Blocks> alreadyTouched = std::make_shared<Blocks>();
+	
+	if (!blockObject->blocksVector.empty()){
+		for (auto& element : blockObject->blocksVector){
+			if (playerObject->currentState == 2 && playerObject->getBody().getGlobalBounds().intersects(element->blockBody.getGlobalBounds())){
+
+				double blockBodyPosY = element->blockBody.getPosition().y;
+				double playerObjectPosY = playerObject->getBody().getPosition().y + playerObject->getBody().getSize().y - 3;
+
+				if (playerObjectPosY < blockBodyPosY){
+					playerObject->currentState = 0;
+					playerObject->movementSpeed = 3;
+					alreadyTouched = element;
+				}
+			}
+			if (playerObject->currentState == 0 && alreadyTouched){
+				if(!playerObject->getBody().getGlobalBounds().intersects(alreadyTouched->blockBody.getGlobalBounds())){ // if player is in a state 0 (standing) and its not colliding with block - let it fall
+					playerObject->currentState = 2;
+				}
+			}
+		}
+	}
 }
 
