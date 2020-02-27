@@ -19,5 +19,7 @@ public:
 	virtual void defineBehaviour(sf::RenderWindow& window) = 0;
 	IShape();
 	virtual ~IShape();
+public:
+	int currentState;
 };
 

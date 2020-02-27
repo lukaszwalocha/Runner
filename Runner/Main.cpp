@@ -15,6 +15,7 @@ int main(){
 	window.setFramerateLimit(120);
 	//OBJECTS
 	RelationsManager relationsManager;
+	std::shared_ptr<Blocks> alreadyTouched;
 	//
 	std::shared_ptr<Blocks> touchable        = relationsManager.getTouchable();
 	//GAME OBJECTS
@@ -29,6 +30,9 @@ int main(){
 	std::unique_ptr<IShape> coinsObject      = relationsManager.makeAlive("Coins", window);
 	std::unique_ptr<IShape> obstaclesObject  = relationsManager.makeAlive("Obstacle", window);
 
+	bool normalCollides = false;
+	bool upperCollides = false;
+
 	while (window.isOpen()){
 		sf::Event evnt;
 		while (window.pollEvent(evnt)){
@@ -37,22 +41,25 @@ int main(){
 		}
 		
 		window.clear();
-		obstaclesObject  -> defineBehaviour(window);
+		//obstaclesObject  -> defineBehaviour(window);
 		upperBlockObject -> defineBehaviour(window);
 		playerObject     -> defineBehaviour(window);
-		enemyObject      -> defineBehaviour(window);
+		//enemyObject      -> defineBehaviour(window);
 		blocksObject     -> defineBehaviour(window);
-		bigBlockObject   -> defineBehaviour(window);
-		oxygenObject     -> defineBehaviour(window);
-		rainObject       -> defineBehaviour(window);
-		windObject       -> defineBehaviour(window);
-		coinsObject      -> defineBehaviour(window);
+		//bigBlockObject   -> defineBehaviour(window);
+		//oxygenObject     -> defineBehaviour(window);
+		//rainObject       -> defineBehaviour(window);
+		//windObject       -> defineBehaviour(window);
+		//coinsObject      -> defineBehaviour(window);
 
 		//relationsManager.checkCollision__Blocks__Obstacles(blocksObject, playerObject, obstaclesObject, std::move(touchable));
 		relationsManager.checkCollision__Oxygen(oxygenObject, playerObject);
 		relationsManager.checkCollision__Wind(windObject, playerObject);
 		relationsManager.checkCollision__Coins(coinsObject, playerObject);
-		relationsManager.checkBlocksCollision(blocksObject, playerObject);
+		//relationsManager.checkBlocksCollision(blocksObject, playerObject, alreadyTouched, "Blocks");
+		relationsManager.checkBlocksCollision(blocksObject, playerObject, alreadyTouched, "Blocks");
+		relationsManager.checkBlocksCollision(upperBlockObject, playerObject, alreadyTouched, "Upper blocks");
+		relationsManager.resetAlreadyTouchedBlock(alreadyTouched);
 		//relationsManager.checkCollision__Blocks__Obstacles(upperBlockObject, playerObject, obstaclesObject, touchable);
 		//relationsManager.checkCollision__Blocks__Obstacles(bigBlockObject, playerObject, obstaclesObject, std::move(touchable));
 		

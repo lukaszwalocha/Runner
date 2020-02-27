@@ -1,11 +1,5 @@
 #include "RelationsManager.h"
 
-namespace collisionBools{
-	//Blocks
-	bool isBigBlockCollide = false;
-	bool isNormalBlockCollide = false;
-}
-
 std::unique_ptr<IShape> RelationsManager::makeAlive(std::string name , sf::RenderWindow& window){
 
 	std::unique_ptr<IShape> newObject = nullptr;
@@ -73,57 +67,6 @@ void RelationsManager::setBehaviour(sf::RenderWindow& window, std::unique_ptr<IS
 }
 //----------------------------------
 
-//------------------------OBSTACLES RELATIONS
-
-std::shared_ptr<Blocks>RelationsManager::getTouchable(){
-
-	std::shared_ptr<Blocks> ptr = std::make_shared<Blocks>();
-
-	return ptr;
-}
-
-
-//SUBFUNCTION FOR CHECKING BOTH TYPES BLOCK COLLISIONS
-void RelationsManager::currentBlocksCollision(std::vector<std::shared_ptr<Blocks>>& blocksVect, sf::RectangleShape& playerBody, 
-	Player* playerObject, int collisionHeight, std::shared_ptr<Blocks>& alreadyTouched, bool& collisionBool){
-
-	if (!blocksVect.empty()){
-		std::for_each(blocksVect.begin(), blocksVect.end(), [&](const std::shared_ptr<Blocks>& currentElement){
-	                                                         LogicUtils::changeStatsCollision(blocksVect, playerObject, 
-															 alreadyTouched, currentElement, collisionBool, collisionHeight, playerBody);});
-		if (playerObject->currentState == 0 && collisionBool)
-			LogicUtils::changeStatsStepDown(blocksVect, alreadyTouched, playerObject, playerBody, collisionBool);
-	}
-}
-
-//------------------------------
-void RelationsManager::checkCollision__Blocks__Obstacles(std::unique_ptr<IShape>&blockObj, std::unique_ptr<IShape>&playerObj, std::unique_ptr<IShape>& obstacleObj, std::shared_ptr<Blocks>& alreadyTouched){
-	
-	Player* playerObject      = static_cast<Player*>(playerObj.get());
-	Blocks* blockObject       = static_cast<Blocks*>(blockObj.get());
-	
-	sf::RectangleShape playerBody = playerObject->getBody();
-	
-	currentBlocksCollision(blockObject->blocksVector, playerBody, playerObject, 665, alreadyTouched, collisionBools::isNormalBlockCollide);
-	currentBlocksCollision(blockObject->upperBlocksVector, playerBody, playerObject, 465, alreadyTouched, collisionBools::isNormalBlockCollide);
-	currentBlocksCollision(blockObject->bigBlocksVector, playerBody, playerObject, 509, alreadyTouched, collisionBools::isBigBlockCollide);
-	
-	//if (!blockObject->bigBlocksVector.empty())
-		//std::cout << blockObject->upperBlocksVector.back()->blockBody.getPosition().y << std::endl;
-	//check if big obstacle can push player
-
-	auto res = std::find_if(blockObject->bigBlocksVector.begin(), blockObject->bigBlocksVector.end(), [&playerBody](std::shared_ptr<Blocks> &currentElement){ 
-		return currentElement->bigBlockBody.getGlobalBounds().intersects(playerBody.getGlobalBounds());});
-	if (res != blockObject->bigBlocksVector.end()){
-		if (playerBody.getPosition().y > 520)
-			playerObject->obstacleWallCollides = true;
-		else 
-			playerObject->obstacleWallCollides = false;
-	}
-	else
-		playerObject->obstacleWallCollides = false;
-}
-
 //OXYGEN BOTTLES RELATIONS--------------------------------------------
 
 void RelationsManager::checkCollision__Oxygen(std::unique_ptr<IShape>& oxygenObj, std::unique_ptr<IShape>& playerObj){
@@ -189,31 +132,64 @@ void RelationsManager::checkCollision__Coins(std::unique_ptr<IShape>& coinObj, s
 	
 }
 
-void RelationsManager::checkBlocksCollision(std::unique_ptr<IShape>& blockObj, std::unique_ptr<IShape>& playerObj){
+void RelationsManager::resetAlreadyTouchedBlock(std::shared_ptr<Blocks>& alreadyTouched){
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)){
+		if (alreadyTouched){
+			alreadyTouched = nullptr;
+		}
+	}
+}
+
+void RelationsManager::checkBlocksCollision(std::unique_ptr<IShape>& blockObj, std::unique_ptr<IShape>& playerObj, std::shared_ptr<Blocks>& alreadyTouched, std::string blockTypeIdentifier){
 	
-	Blocks* blockObject = static_cast<Blocks*>(blockObj.get());
+	Blocks* blockObject  = static_cast<Blocks*>(blockObj.get());
 	Player* playerObject = static_cast<Player*>(playerObj.get());
+	std::shared_ptr<sf::RectangleShape>  currentBlocksType;
+	std::vector<std::shared_ptr<Blocks>> currentBlocksTypeVect;
 
-	std::shared_ptr<Blocks> alreadyTouched = std::make_shared<Blocks>();
-	
-	if (!blockObject->blocksVector.empty()){
-		for (auto& element : blockObject->blocksVector){
-			if (playerObject->currentState == 2 && playerObject->getBody().getGlobalBounds().intersects(element->blockBody.getGlobalBounds())){
+	if (blockTypeIdentifier == "Blocks"){
+		currentBlocksTypeVect = blockObject->blocksVector;
+	}
+	else if (blockTypeIdentifier == "Upper blocks"){
+		currentBlocksTypeVect = blockObject->upperBlocksVector;
+	}
 
-				double blockBodyPosY = element->blockBody.getPosition().y;
-				double playerObjectPosY = playerObject->getBody().getPosition().y + playerObject->getBody().getSize().y - 3;
+	else if (blockTypeIdentifier == "Big blocks"){
+		currentBlocksTypeVect = blockObject->bigBlocksVector;
+	}
 
-				if (playerObjectPosY < blockBodyPosY){
-					playerObject->currentState = 0;
+	if (!alreadyTouched){
+		for (auto& element : currentBlocksTypeVect){
+
+			if (currentBlocksTypeVect == blockObject->blocksVector || currentBlocksTypeVect == blockObject->upperBlocksVector){
+				currentBlocksType = std::make_shared<sf::RectangleShape>(element->blockBody);
+			}
+			else if (blockTypeIdentifier == "Big blocks"){
+				currentBlocksType = std::make_shared<sf::RectangleShape>(element->bigBlockBody);
+			}
+
+			if (playerObject->currentState == 2 && playerObject->getBody().getGlobalBounds().intersects(currentBlocksType->getGlobalBounds())){
+
+				double blockBodyPosY    = currentBlocksType->getPosition().y;
+				double playerObjectPosY = playerObject->getBody().getPosition().y + playerObject->getBody().getSize().y;
+
+				if (playerObjectPosY - 4 < blockBodyPosY){
+					playerObject->currentState  = 0;
 					playerObject->movementSpeed = 3;
-					alreadyTouched = element;
+					alreadyTouched              = element;
 				}
 			}
-			if (playerObject->currentState == 0 && alreadyTouched){
-				if(!playerObject->getBody().getGlobalBounds().intersects(alreadyTouched->blockBody.getGlobalBounds())){ // if player is in a state 0 (standing) and its not colliding with block - let it fall
-					playerObject->currentState = 2;
-				}
-			}
+		}
+	}
+
+	if (playerObject->currentState == 0 && alreadyTouched){ // check when player should fall from the block standing on
+		if (playerObject->getBody().getPosition().x < alreadyTouched->blockBody.getPosition().x - playerObject->getBody().getSize().x||
+			playerObject->getBody().getPosition().x > alreadyTouched->blockBody.getPosition().x + alreadyTouched->blockBody.getSize().x){
+
+			playerObject->currentState  = 2;
+			playerObject->movementSpeed = 2;
+			alreadyTouched              = nullptr;
 		}
 	}
 }

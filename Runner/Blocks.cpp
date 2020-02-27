@@ -21,7 +21,7 @@ Blocks::Blocks(sf::RenderWindow& window, std::string name)
 	this->name = name;
 	this->setMovementSpeed();
 	this->bigBlockBody.setFillColor(sf::Color::Cyan);
-	this->bigBlockBody.setSize(sf::Vector2f(randomizeWidth(100, 220), 150.0f));
+	this->bigBlockBody.setSize(sf::Vector2f(randomizeWidth(50, 100), 150.0f));
 	this->bigBlockBody.setPosition(sf::Vector2f(window.getSize().x, 550.0f));
 	respawnCounter__Big = 0;
 }
@@ -74,13 +74,14 @@ void Blocks::emplaceBigBlocks(sf::RenderWindow& window){
 		std::shared_ptr<Blocks> newBigBlock = std::make_shared<Blocks>(window, "Big blocks");
 		bigBlocksVector.emplace_back(newBigBlock);
 		respawnCounter__Big = 0;
-		std::cout << newBigBlock->bigBlockBody.getPosition().y << std::endl;
 	}
 
 }
 
 void Blocks::emplaceUpperBlocks(sf::RenderWindow& window){
+
 	respawnCounter__upper++;
+
 	if (respawnCounter__upper == 240){
 		std::shared_ptr<Blocks> newUpperBlock = std::make_shared<Blocks>("Upper blocks");
 
@@ -88,19 +89,19 @@ void Blocks::emplaceUpperBlocks(sf::RenderWindow& window){
 		upperBlocksVector.emplace_back(std::move(newUpperBlock));
 		respawnCounter__upper = 0;
 	}
-	if (!this->upperBlocksVector.empty())
-		std::cout << this->upperBlocksVector.back()->blockBody.getPosition().y << std::endl;
 }
 
 void Blocks::emplaceBlocks(sf::RenderWindow& window){
+	
 	respawnCounter++;
-	if (respawnCounter == 80){
+	if (respawnCounter == 100){
 		std::shared_ptr<Blocks> newElement = std::make_shared<Blocks>(window, "Blocks");
 
 		newElement->blockWidth = randomizeWidth(70, 180);
 		blocksVector.emplace_back(std::move(newElement));
 		respawnCounter = 0;
 	}
+	
 }
 
 void Blocks::move(){
@@ -157,7 +158,7 @@ void Blocks::draw(sf::RenderWindow& window){
 void Blocks::defineBehaviour(sf::RenderWindow& window){
 	if (name == "Blocks")
 		this->emplaceBlocks(window);
-	if (name == "Upper blocks");
+	if (name == "Upper blocks")
 		this->emplaceUpperBlocks(window);
 	if (name == "Big blocks")
 		this->emplaceBigBlocks(window);

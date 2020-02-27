@@ -1,5 +1,6 @@
 #pragma once
 #include "IShape.h"
+#include "Blocks.h"
 //#include "LogicUtilities.h"
 
 class Player:public IShape{
@@ -13,6 +14,7 @@ class Player:public IShape{
 		void setMovementSpeed()				override;
 		void draw(sf::RenderWindow& window) override;
 		void defineBehaviour(sf::RenderWindow& window) override;
+		void resetAlreadyTouchedBlock(std::shared_ptr<Blocks>& alreadyTouched);
 		std::string getName() override;
 		sf::RectangleShape getBody();
 	public:
