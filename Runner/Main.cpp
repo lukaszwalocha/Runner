@@ -6,7 +6,7 @@
 #include "RelationsManager.h"
 #include <memory>
 //Design patterns - state, strategy, factory
-
+using ObjectsMap = std::map < std::string, const std::unique_ptr<IShape>>;
 
 int main(){
 
@@ -16,22 +16,8 @@ int main(){
 	//OBJECTS
 	RelationsManager relationsManager;
 	std::shared_ptr<Blocks> alreadyTouched;
-	//
-	std::shared_ptr<Blocks> touchable        = relationsManager.getTouchable();
 	//GAME OBJECTS
-	std::unique_ptr<IShape> playerObject     = relationsManager.makeAlive("Player", window);
-	std::unique_ptr<IShape> enemyObject      = relationsManager.makeAlive("Enemy", window);
-	std::unique_ptr<IShape> blocksObject     = relationsManager.makeAlive("Blocks", window);
-	std::unique_ptr<IShape> upperBlockObject = relationsManager.makeAlive("Upper blocks", window);
-	std::unique_ptr<IShape> bigBlockObject   = relationsManager.makeAlive("Big blocks", window);
-	std::unique_ptr<IShape> oxygenObject     = relationsManager.makeAlive("Oxygen", window);
-	std::unique_ptr<IShape> rainObject       = relationsManager.makeAlive("Rain", window);
-	std::unique_ptr<IShape> windObject       = relationsManager.makeAlive("Wind", window);
-	std::unique_ptr<IShape> coinsObject      = relationsManager.makeAlive("Coins", window);
-	std::unique_ptr<IShape> obstaclesObject  = relationsManager.makeAlive("Obstacle", window);
-
-	bool normalCollides = false;
-	bool upperCollides = false;
+	ObjectsMap gameObjects = relationsManager.setObjectsMap(window);
 
 	while (window.isOpen()){
 		sf::Event evnt;
@@ -41,28 +27,12 @@ int main(){
 		}
 		
 		window.clear();
-		//obstaclesObject  -> defineBehaviour(window);
-		upperBlockObject -> defineBehaviour(window);
-		playerObject     -> defineBehaviour(window);
-		//enemyObject      -> defineBehaviour(window);
-		blocksObject     -> defineBehaviour(window);
-		//bigBlockObject   -> defineBehaviour(window);
-		//oxygenObject     -> defineBehaviour(window);
-		//rainObject       -> defineBehaviour(window);
-		//windObject       -> defineBehaviour(window);
-		//coinsObject      -> defineBehaviour(window);
-
-		//relationsManager.checkCollision__Blocks__Obstacles(blocksObject, playerObject, obstaclesObject, std::move(touchable));
-		relationsManager.checkCollision__Oxygen(oxygenObject, playerObject);
-		relationsManager.checkCollision__Wind(windObject, playerObject);
-		relationsManager.checkCollision__Coins(coinsObject, playerObject);
-		//relationsManager.checkBlocksCollision(blocksObject, playerObject, alreadyTouched, "Blocks");
-		relationsManager.checkBlocksCollision(blocksObject, playerObject, alreadyTouched, "Blocks");
-		relationsManager.checkBlocksCollision(upperBlockObject, playerObject, alreadyTouched, "Upper blocks");
-		relationsManager.resetAlreadyTouchedBlock(alreadyTouched);
-		//relationsManager.checkCollision__Blocks__Obstacles(upperBlockObject, playerObject, obstaclesObject, touchable);
-		//relationsManager.checkCollision__Blocks__Obstacles(bigBlockObject, playerObject, obstaclesObject, std::move(touchable));
 		
+		relationsManager.setGameObjectsBehaviour(gameObjects, window);
+		relationsManager.setObjectsMap(window);
+		relationsManager.setGameObjectsRelations(gameObjects, alreadyTouched);
+		relationsManager.resetAlreadyTouchedBlock(alreadyTouched);
+
 		window.display();
 	}
 	return 0;

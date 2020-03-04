@@ -62,17 +62,53 @@ std::unique_ptr<IShape> RelationsManager::makeAlive(std::string name , sf::Rende
 	return newObject;
 }
 
-void RelationsManager::setBehaviour(sf::RenderWindow& window, std::unique_ptr<IShape>& object){
-	object->defineBehaviour(window);
+ObjectsMap RelationsManager::setObjectsMap(sf::RenderWindow& window){
+
+	std::vector<std::string> namesVect = { "Player", "Enemy", "Blocks", "Rain", "Wind", "Oxygen", "Coins", "Upper blocks", "Big blocks" };
+	ObjectsMap gameObjects;
+
+	for (auto& objectName : namesVect){
+
+		std::unique_ptr<IShape> gameObject;
+		gameObject = makeAlive(objectName, window);
+		
+		gameObjects.insert(std::make_pair(objectName, std::move(gameObject)));
+	}
+
+	int dbg = 1;
+	return gameObjects;
 }
+
+void RelationsManager::setGameObjectsBehaviour(ObjectsMap& gameObjects, sf::RenderWindow& window){
+	for (auto& gameObject : gameObjects){
+		gameObject.second->defineBehaviour(window);
+	}
+}
+
+void RelationsManager::setGameObjectsRelations(ObjectsMap& gameObjects, std::shared_ptr<Blocks>& alreadyTouched){
+	
+	Player* playerObject      = static_cast<Player*>  (gameObjects["Player"].get());
+	Oxygen* oxygenObject      = static_cast<Oxygen*>  (gameObjects["Oxygen"].get());
+	Wind* windObject          = static_cast<Wind*>    (gameObjects["Wind"].get());
+	Coins* coinsObject        = static_cast<Coins*>   (gameObjects["Coins"].get());
+	Blocks* blocksObject      = static_cast<Blocks*>  (gameObjects["Blocks"].get());
+	Blocks* bigBlocksObject   = static_cast<Blocks*>  (gameObjects["Big blocks"].get());
+	Blocks* upperBlocksObject = static_cast<Blocks*>  (gameObjects["Upper blocks"].get());
+
+	checkCollision__Oxygen(oxygenObject, playerObject);
+	checkCollision__Wind(windObject, playerObject);
+	//checkCollision__Rain(rainObject, playerObject);
+	checkCollision__Coins(coinsObject, playerObject);
+	checkBlocksCollision(blocksObject, playerObject, alreadyTouched, "Blocks");
+	checkBlocksCollision(upperBlocksObject, playerObject, alreadyTouched, "Upper blocks");
+	
+}
+
 //----------------------------------
 
 //OXYGEN BOTTLES RELATIONS--------------------------------------------
 
-void RelationsManager::checkCollision__Oxygen(std::unique_ptr<IShape>& oxygenObj, std::unique_ptr<IShape>& playerObj){
-
-	Oxygen* oxygenObject = static_cast<Oxygen*>(oxygenObj.get());
-	Player* playerObject = static_cast<Player*>(playerObj.get());
+void RelationsManager::checkCollision__Oxygen(Oxygen* oxygenObject, Player* playerObject){
 
 	sf::RectangleShape playerBody = playerObject->getBody();
 	if (!oxygenObject->oxygenBottlesVect.empty()){
@@ -85,10 +121,7 @@ void RelationsManager::checkCollision__Oxygen(std::unique_ptr<IShape>& oxygenObj
 
 //ATMOSPHERE RELATIONS--------------------------------------------------
 
-void RelationsManager::checkCollision__Wind(std::unique_ptr<IShape>& windObj, std::unique_ptr<IShape>& playerObj){
-
-	Player* playerObject = static_cast<Player*>(playerObj.get());
-	Wind*   windObject   = static_cast<Wind*>(windObj.get());
+void RelationsManager::checkCollision__Wind(Wind* windObject, Player* playerObject){
 
 	sf::RectangleShape playerBody = playerObject->getBody();
 
@@ -99,15 +132,12 @@ void RelationsManager::checkCollision__Wind(std::unique_ptr<IShape>& windObj, st
 	}
 }
 
-void RelationsManager::checkCollision__Rain(std::unique_ptr<Rain> rainObject, std::unique_ptr<Player> playerObject){
+void RelationsManager::checkCollision__Rain(Rain* rainObject, Player* playerObject){
 
 }
 
 //COINS-PLAYER RELATIONS------------------------------------------------------
-void RelationsManager::checkCollision__Coins(std::unique_ptr<IShape>& coinObj, std::unique_ptr<IShape>& playerObj){
-
-	Player* playerObject = static_cast<Player*>(playerObj.get());
-	Coins*  coinObject   = static_cast<Coins*>(coinObj.get());
+void RelationsManager::checkCollision__Coins(Coins* coinObject, Player* playerObject){
 
 	sf::RectangleShape playerBody = playerObject->getBody();
 	int dissapearType = 0;
@@ -141,10 +171,8 @@ void RelationsManager::resetAlreadyTouchedBlock(std::shared_ptr<Blocks>& already
 	}
 }
 
-void RelationsManager::checkBlocksCollision(std::unique_ptr<IShape>& blockObj, std::unique_ptr<IShape>& playerObj, std::shared_ptr<Blocks>& alreadyTouched, std::string blockTypeIdentifier){
+void RelationsManager::checkBlocksCollision(Blocks* blockObject, Player* playerObject, std::shared_ptr<Blocks>& alreadyTouched, std::string blockTypeIdentifier){
 	
-	Blocks* blockObject  = static_cast<Blocks*>(blockObj.get());
-	Player* playerObject = static_cast<Player*>(playerObj.get());
 	std::shared_ptr<sf::RectangleShape>  currentBlocksType;
 	std::vector<std::shared_ptr<Blocks>> currentBlocksTypeVect;
 
