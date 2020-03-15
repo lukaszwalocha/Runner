@@ -3,63 +3,19 @@
 std::unique_ptr<IShape> RelationsManager::makeAlive(std::string name , sf::RenderWindow& window){
 
 	std::unique_ptr<IShape> newObject = nullptr;
-	int type;
-	if (name == "Player"){
-		type = 1;
-	}
-	else if (name == "Enemy"){
-		type = 2;
-	}
-	else if (name == "Blocks"){
-		type = 3;
-	}
-	else if (name == "Rain"){
-		type = 4;
-	}
-	else if (name == "Wind"){
-		type = 5;
-	}
-	else if (name == "Oxygen"){
-		type = 6;
-	}
-	else if (name == "Coins"){
-		type = 7;
-	}
-	else if (name == "Upper blocks"){
-		type = 8;
-	}
-	else if (name == "Obstacle"){
-		type = 9;
-	}
-	else if (name == "Big blocks"){
-		type = 10;
-	}
+	std::map<std::string, std::unique_ptr<IShape>> typeIdentifiers;
+	
+	typeIdentifiers.insert(std::make_pair("Player",         std::make_unique<Player>("Player")));
+	typeIdentifiers.insert(std::make_pair(("Enemy"),        std::make_unique<Enemy>("Enemy")));
+	typeIdentifiers.insert(std::make_pair(("Blocks"),       std::make_unique<Blocks>(window, "Blocks")));
+	typeIdentifiers.insert(std::make_pair(("Rain"),         std::make_unique<Rain>("Rain")));
+	typeIdentifiers.insert(std::make_pair(("Wind"),         std::make_unique<Wind>("Wind")));
+	typeIdentifiers.insert(std::make_pair(("Oxygen"),       std::make_unique<Oxygen>("Oxygen")));
+	typeIdentifiers.insert(std::make_pair(("Coins"),        std::make_unique<Coins>("Coins")));
+	typeIdentifiers.insert(std::make_pair(("Upper blocks"), std::make_unique<Blocks>("Upper blocks")));
+	typeIdentifiers.insert(std::make_pair(("Big blocks"),   std::make_unique<Blocks>("Big blocks")));
 
-	switch (type){
-		case 1:
-			newObject = std::make_unique<Player>("Player");         break;
-		case 2:
-			newObject = std::make_unique<Enemy>("Enemy");           break;
-		case 3:
-			newObject = std::make_unique<Blocks>(window, "Blocks"); break;
-		case 4:
-			newObject = std::make_unique<Rain>("Rain");             break;
-		case 5:
-			newObject = std::make_unique<Wind>("Wind");             break;
-		case 6:
-			newObject = std::make_unique<Oxygen>("Oxygen");         break;
-		case 7:
-			newObject = std::make_unique<Coins>("Coins");			break;
-		case 8:
-			newObject = std::make_unique<Blocks>("Upper blocks");   break;
-		case 9:
-			//newObject = std::make_unique<Obstacles>("Obstacle");	break;
-		case 10:
-			newObject = std::make_unique<Blocks>(window, "Big blocks"); break;
-		default: break;
-	}
-
-	return newObject;
+	return std::move(typeIdentifiers[name]);
 }
 
 ObjectsMap RelationsManager::setObjectsMap(sf::RenderWindow& window){
@@ -75,7 +31,6 @@ ObjectsMap RelationsManager::setObjectsMap(sf::RenderWindow& window){
 		gameObjects.insert(std::make_pair(objectName, std::move(gameObject)));
 	}
 
-	int dbg = 1;
 	return gameObjects;
 }
 
@@ -101,7 +56,8 @@ void RelationsManager::setGameObjectsRelations(ObjectsMap& gameObjects, std::sha
 	checkCollision__Coins(coinsObject, playerObject);
 	checkBlocksCollision(blocksObject, playerObject, alreadyTouched, "Blocks");
 	checkBlocksCollision(upperBlocksObject, playerObject, alreadyTouched, "Upper blocks");
-	
+	checkBlocksCollision(bigBlocksObject, playerObject, alreadyTouched, "Big blocks");
+	resetAlreadyTouchedBlock(alreadyTouched);
 }
 
 //----------------------------------
@@ -193,7 +149,7 @@ void RelationsManager::checkBlocksCollision(Blocks* blockObject, Player* playerO
 			if (currentBlocksTypeVect == blockObject->blocksVector || currentBlocksTypeVect == blockObject->upperBlocksVector){
 				currentBlocksType = std::make_shared<sf::RectangleShape>(element->blockBody);
 			}
-			else if (blockTypeIdentifier == "Big blocks"){
+			else if (currentBlocksTypeVect == blockObject->bigBlocksVector){
 				currentBlocksType = std::make_shared<sf::RectangleShape>(element->bigBlockBody);
 			}
 

@@ -29,9 +29,7 @@ int main(){
 		window.clear();
 		
 		relationsManager.setGameObjectsBehaviour(gameObjects, window);
-		relationsManager.setObjectsMap(window);
 		relationsManager.setGameObjectsRelations(gameObjects, alreadyTouched);
-		relationsManager.resetAlreadyTouchedBlock(alreadyTouched);
 
 		window.display();
 	}
