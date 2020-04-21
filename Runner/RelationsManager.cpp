@@ -34,10 +34,99 @@ ObjectsMap RelationsManager::setObjectsMap(sf::RenderWindow& window){
 	return gameObjects;
 }
 
-void RelationsManager::setGameObjectsBehaviour(ObjectsMap& gameObjects, sf::RenderWindow& window){
-	for (auto& gameObject : gameObjects){
-		gameObject.second->defineBehaviour(window);
+bool RelationsManager::isAlreadyAdded(std::string objectName, ObjectsMap& gameObjects){
+
+	//auto isObjectFound = std::any_of(gameObjects.begin(), gameObjects.end(), [&](std::pair<std::string, const std::unique_ptr<IShape>> element){ return element.first == objectName; });
+	
+	for (auto& element : this->eventsVector){
+		if (element.first == objectName){
+			return true;
+		}
 	}
+
+	return false;
+}
+
+void RelationsManager::setGameObjectsBehaviour(ObjectsMap& gameObjects, sf::RenderWindow& window, GameManager& gameManager){
+	
+	if (!isAlreadyAdded("Player", gameObjects)){
+		eventsVector.push_back(std::make_pair("Player", [&](){
+			gameObjects["Player"]->defineBehaviour(window); }));
+	}
+	if (!isAlreadyAdded("Blocks", gameObjects)){
+		eventsVector.push_back(std::make_pair("Blocks", [&](){
+			gameObjects["Blocks"]->defineBehaviour(window); }));
+	}
+
+	if (!isAlreadyAdded("Coins", gameObjects)){
+		eventsVector.push_back(std::make_pair("Coins", [&](){
+			gameObjects["Coins"]->defineBehaviour(window); }));
+	}
+
+	for (auto& eventElement : this->eventsVector){
+		eventElement.second();
+	}
+
+	switch (gameManager.getLevel()){
+	case 2:
+		if (!isAlreadyAdded("Upper blocks", gameObjects)){
+			eventsVector.push_back(std::make_pair("Upper blocks", [&](){
+				gameObjects["Upper blocks"]->defineBehaviour(window);
+			}));
+		}
+		break;
+	case 3:
+		if (!isAlreadyAdded("Big blocks", gameObjects)){
+			eventsVector.push_back(std::make_pair("Big blocks", [&](){
+				gameObjects["Big blocks"]->defineBehaviour(window);
+			}));
+		}
+		break;
+	case 4:
+		// TODO
+		break;
+	case 5:
+		if (!isAlreadyAdded("Enemy", gameObjects)){
+			eventsVector.push_back(std::make_pair("Enemy", [&](){
+				gameObjects["Enemy"]->defineBehaviour(window);
+			}));
+		}
+		break;
+	case 6:
+		if (!isAlreadyAdded("Oxygen", gameObjects)){
+			eventsVector.push_back(std::make_pair("Oxygen", [&](){
+				gameObjects["Oxygen"]->defineBehaviour(window);
+			}));
+		}
+		break;
+	case 7:
+		if (!isAlreadyAdded("Wind", gameObjects)){
+			eventsVector.push_back(std::make_pair("Wind", [&](){
+				gameObjects["Wind"]->defineBehaviour(window);
+			}));
+		}
+		break;
+	case 8:
+		//TODO
+		break;
+	case 9:
+		if (!isAlreadyAdded("Rain", gameObjects)){
+			eventsVector.push_back(std::make_pair("Rain", [&](){
+				gameObjects["Rain"]->defineBehaviour(window);
+			}));
+		}
+		break;
+	case 10:
+		//TODO
+		break;
+	case 11:
+		//TODO
+		break;
+	default: 
+		break;
+	}
+
+
 }
 
 void RelationsManager::setGameObjectsRelations(ObjectsMap& gameObjects, std::shared_ptr<Blocks>& alreadyTouched){

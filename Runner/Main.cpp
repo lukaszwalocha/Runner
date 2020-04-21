@@ -15,6 +15,7 @@ int main(){
 	window.setFramerateLimit(120);
 	//OBJECTS
 	RelationsManager relationsManager;
+	GameManager gameManager;
 	std::shared_ptr<Blocks> alreadyTouched;
 	//GAME OBJECTS
 	ObjectsMap gameObjects = relationsManager.setObjectsMap(window);
@@ -28,7 +29,7 @@ int main(){
 		
 		window.clear();
 		
-		relationsManager.setGameObjectsBehaviour(gameObjects, window);
+		relationsManager.setGameObjectsBehaviour(gameObjects, window, gameManager);
 		relationsManager.setGameObjectsRelations(gameObjects, alreadyTouched);
 
 		window.display();

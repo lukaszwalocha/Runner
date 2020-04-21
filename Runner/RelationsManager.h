@@ -8,6 +8,7 @@
 #include "Coins.h"
 #include "Obstacles.h"
 #include "LogicUtilities.h"
+#include "GameManager.h"
 #include <string>
 #include <functional>
 
@@ -21,7 +22,7 @@ class RelationsManager{
 	public:
 	//------------------------------------GENERAL METHODS
 		ObjectsMap setObjectsMap(sf::RenderWindow& window);
-		void setGameObjectsBehaviour(ObjectsMap& gameObjects, sf::RenderWindow& window);
+		void setGameObjectsBehaviour(ObjectsMap& gameObjects, sf::RenderWindow& window, GameManager& gameManager);
 		void setGameObjectsRelations(ObjectsMap& gameObjects, std::shared_ptr<Blocks>& alreadyTouchedBlock);
 	//------------------------------------OXYGEN BOTTLES  - PLAYER RELATIONS
 		void checkCollision__Oxygen(Oxygen* oxygenObj, Player* playerObj); // done
@@ -41,5 +42,8 @@ class RelationsManager{
 	//------------------------------------STRATEGY 
 		std::unique_ptr<IShape> makeAlive(std::string name, sf::RenderWindow& window);
 		//void setRelations(std::unique_ptr<IShape>& object, std::unique_ptr<IShape>& anotherObject); // here defining which relations managers function will be executed
+		bool isAlreadyAdded(std::string objectName, ObjectsMap& gameObjects);
+	private:
+		std::vector<std::pair<std::string,std::function<void()>>> eventsVector;
 };
 

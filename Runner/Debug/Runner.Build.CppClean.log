@@ -3,13 +3,16 @@ d:\documents\visual studio 2013\projects\runner\runner\debug\vc120.idb
 d:\documents\visual studio 2013\projects\runner\runner\debug\blocks.obj
 d:\documents\visual studio 2013\projects\runner\runner\debug\enemy.obj
 d:\documents\visual studio 2013\projects\runner\runner\debug\ishape.obj
-d:\documents\visual studio 2013\projects\runner\runner\debug\logicmanager.obj
 d:\documents\visual studio 2013\projects\runner\runner\debug\main.obj
 d:\documents\visual studio 2013\projects\runner\runner\debug\oxygen.obj
 d:\documents\visual studio 2013\projects\runner\runner\debug\player.obj
 d:\documents\visual studio 2013\projects\runner\runner\debug\rain.obj
 d:\documents\visual studio 2013\projects\runner\runner\debug\relationsmanager.obj
 d:\documents\visual studio 2013\projects\runner\runner\debug\wind.obj
+d:\documents\visual studio 2013\projects\runner\runner\debug\obstacles.obj
+d:\documents\visual studio 2013\projects\runner\runner\debug\logicutilities.obj
+d:\documents\visual studio 2013\projects\runner\runner\debug\coins.obj
+d:\documents\visual studio 2013\projects\runner\runner\debug\gamemanager.obj
 d:\documents\visual studio 2013\projects\runner\debug\runner.ilk
 d:\documents\visual studio 2013\projects\runner\debug\runner.exe
 d:\documents\visual studio 2013\projects\runner\debug\runner.pdb

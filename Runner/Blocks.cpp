@@ -162,6 +162,7 @@ void Blocks::defineBehaviour(sf::RenderWindow& window){
 		this->emplaceUpperBlocks(window);
 	if (name == "Big blocks")
 		this->emplaceBigBlocks(window);
+
 	this->setElementPosition();
 	this->eraseBlocks();
 	this->move();
