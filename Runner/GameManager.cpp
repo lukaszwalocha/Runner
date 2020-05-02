@@ -1,45 +1,48 @@
 #include "GameManager.h"
+#include <array>
 
 GameManager::GameManager(){
-	this->level = 6;
+	this->level = 1;
+}
+
+void GameManager::defineLevelStages(){
+
+	std::map<int, int> localPointsAndLevels = {
+		{ 30, 2 },
+		{ 60, 3 },
+		{ 90, 4 },
+		{ 120, 5 },
+		{ 160, 6 },
+		{ 230, 7 },
+		{ 300, 8 },
+		{ 400, 9 },
+		{ 500, 10 },
+		{ 600, 11 }
+	};
+
+	std::vector<int> localPointsStages = { 30, 60, 90, 120, 160, 230, 300, 400, 500, 600};
+
+	for (auto& valuesPair : localPointsAndLevels){
+		this->pointsAndLevels.insert(valuesPair);
+	}
+	for (auto& pointStage : localPointsStages){
+		this->pointStages.push_back(pointStage);
+	}
+
 }
 
 void GameManager::setLevel(int points){
 	
-	switch (points){
-	case 30:
-		this->level = 2;
-		break;
-	case 60:
-		this->level = 3;
-		break;
-	case 90:
-		this->level = 4;
-		break;
-	case 120:
-		this->level = 5;
-		break;
-	case 160:
-		this->level = 6;
-		break;
-	case 230:
-		this->level = 7;
-		break;
-	case 300:
-		this->level = 8;
-		break;
-	case 400:
-		this->level = 9;
-		break;
-	case 500:
-		this->level = 10;
-		break;
-	case 600:
-		this->level = 11;
-		break;
-	default:
-		break;
+	auto isLevelReadyToChange = std::any_of(this->pointStages.cbegin(), this->pointStages.cend(), [=](const int element){
+								return element == points; });
+
+	if (!isLevelReadyToChange){
+		return;
 	}
+	else {
+		this->level = this->pointsAndLevels[points];
+	}
+
 }
 
 int GameManager::getLevel(){

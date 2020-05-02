@@ -23,10 +23,10 @@ class Player:public IShape{
 		bool windCollides;
 		bool obstacleWallCollides;
 		int  windTouchCounter;
+		int points;
 		std::string name;
 	private:
 		sf::RectangleShape playerBody;
-
 };
 
 

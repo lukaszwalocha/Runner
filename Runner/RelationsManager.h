@@ -23,7 +23,7 @@ class RelationsManager{
 	//------------------------------------GENERAL METHODS
 		ObjectsMap setObjectsMap(sf::RenderWindow& window);
 		void setGameObjectsBehaviour(ObjectsMap& gameObjects, sf::RenderWindow& window, GameManager& gameManager);
-		void setGameObjectsRelations(ObjectsMap& gameObjects, std::shared_ptr<Blocks>& alreadyTouchedBlock);
+		void setGameObjectsRelations(ObjectsMap& gameObjects, std::shared_ptr<Blocks>& alreadyTouchedBlock, GameManager& gameManager);
 	//------------------------------------OXYGEN BOTTLES  - PLAYER RELATIONS
 		void checkCollision__Oxygen(Oxygen* oxygenObj, Player* playerObj); // done
 
@@ -32,7 +32,7 @@ class RelationsManager{
 		void checkCollision__Wind(Wind* windObj,  Player* playerObj); //done
 
 	//------------------------------------PLAYER - COINS RELATIONS
-		void checkCollision__Coins(Coins* coinsObj, Player* playerObj);
+		void checkCollision__Coins(Coins* coinsObj, Player* playerObj, GameManager& gameManager);
 
 	//------------------------------------BLOCKS - PLAYER RELATIONS
 		void checkBlocksCollision(Blocks* blockObj, Player* playerObj, std::shared_ptr<Blocks>& alreadyTouched,

@@ -36,8 +36,6 @@ ObjectsMap RelationsManager::setObjectsMap(sf::RenderWindow& window){
 
 bool RelationsManager::isAlreadyAdded(std::string objectName, ObjectsMap& gameObjects){
 
-	//auto isObjectFound = std::any_of(gameObjects.begin(), gameObjects.end(), [&](std::pair<std::string, const std::unique_ptr<IShape>> element){ return element.first == objectName; });
-	
 	for (auto& element : this->eventsVector){
 		if (element.first == objectName){
 			return true;
@@ -49,6 +47,7 @@ bool RelationsManager::isAlreadyAdded(std::string objectName, ObjectsMap& gameOb
 
 void RelationsManager::setGameObjectsBehaviour(ObjectsMap& gameObjects, sf::RenderWindow& window, GameManager& gameManager){
 	
+	//ADD STARTING OBJECTS
 	if (!isAlreadyAdded("Player", gameObjects)){
 		eventsVector.push_back(std::make_pair("Player", [&](){
 			gameObjects["Player"]->defineBehaviour(window); }));
@@ -67,6 +66,7 @@ void RelationsManager::setGameObjectsBehaviour(ObjectsMap& gameObjects, sf::Rend
 		eventElement.second();
 	}
 
+	//ADD NEW OBJECTS AND THEIR BEHAVIOURS ACCORDING TO THE ACTUAL LEVEL
 	switch (gameManager.getLevel()){
 	case 2:
 		if (!isAlreadyAdded("Upper blocks", gameObjects)){
@@ -125,11 +125,9 @@ void RelationsManager::setGameObjectsBehaviour(ObjectsMap& gameObjects, sf::Rend
 	default: 
 		break;
 	}
-
-
 }
 
-void RelationsManager::setGameObjectsRelations(ObjectsMap& gameObjects, std::shared_ptr<Blocks>& alreadyTouched){
+void RelationsManager::setGameObjectsRelations(ObjectsMap& gameObjects, std::shared_ptr<Blocks>& alreadyTouched, GameManager& gameManager){
 	
 	Player* playerObject      = static_cast<Player*>  (gameObjects["Player"].get());
 	Oxygen* oxygenObject      = static_cast<Oxygen*>  (gameObjects["Oxygen"].get());
@@ -142,7 +140,7 @@ void RelationsManager::setGameObjectsRelations(ObjectsMap& gameObjects, std::sha
 	checkCollision__Oxygen(oxygenObject, playerObject);
 	checkCollision__Wind(windObject, playerObject);
 	//checkCollision__Rain(rainObject, playerObject);
-	checkCollision__Coins(coinsObject, playerObject);
+	checkCollision__Coins(coinsObject, playerObject, gameManager);
 	checkBlocksCollision(blocksObject, playerObject, alreadyTouched, "Blocks");
 	checkBlocksCollision(upperBlocksObject, playerObject, alreadyTouched, "Upper blocks");
 	checkBlocksCollision(bigBlocksObject, playerObject, alreadyTouched, "Big blocks");
@@ -182,7 +180,7 @@ void RelationsManager::checkCollision__Rain(Rain* rainObject, Player* playerObje
 }
 
 //COINS-PLAYER RELATIONS------------------------------------------------------
-void RelationsManager::checkCollision__Coins(Coins* coinObject, Player* playerObject){
+void RelationsManager::checkCollision__Coins(Coins* coinObject, Player* playerObject, GameManager& gameManager){
 
 	sf::RectangleShape playerBody = playerObject->getBody();
 	int dissapearType = 0;
@@ -198,7 +196,10 @@ void RelationsManager::checkCollision__Coins(Coins* coinObject, Player* playerOb
 	if (resultCollision != coinObject->coinsVector.end()){
 		dissapearType = 1;
 		coinObject->coinsVector.erase(resultCollision);
-		//here we will add points collection later :)
+		playerObject->points += 10;
+		gameManager.setLevel(playerObject->points); // set level according to points 
+		std::cout << playerObject->points << std::endl;
+		std::cout << gameManager.getLevel() << std::endl;
 	}
 	else if (resultOutOfScreen != coinObject->coinsVector.end()){
 		dissapearType = 2;
@@ -244,7 +245,13 @@ void RelationsManager::checkBlocksCollision(Blocks* blockObject, Player* playerO
 
 			if (playerObject->currentState == 2 && playerObject->getBody().getGlobalBounds().intersects(currentBlocksType->getGlobalBounds())){
 
-				double blockBodyPosY    = currentBlocksType->getPosition().y;
+
+				if (blockTypeIdentifier == "Big blocks"){
+					int test;
+					test = 1;
+				}
+
+	 			double blockBodyPosY    = currentBlocksType->getPosition().y;
 				double playerObjectPosY = playerObject->getBody().getPosition().y + playerObject->getBody().getSize().y;
 
 				if (playerObjectPosY - 4 < blockBodyPosY){
@@ -259,7 +266,7 @@ void RelationsManager::checkBlocksCollision(Blocks* blockObject, Player* playerO
 	if (playerObject->currentState == 0 && alreadyTouched){ // check when player should fall from the block standing on
 		if (playerObject->getBody().getPosition().x < alreadyTouched->blockBody.getPosition().x - playerObject->getBody().getSize().x||
 			playerObject->getBody().getPosition().x > alreadyTouched->blockBody.getPosition().x + alreadyTouched->blockBody.getSize().x){
-
+//TODO: blockBody should be also for big block body - solves the collision problem
 			playerObject->currentState  = 2;
 			playerObject->movementSpeed = 2;
 			alreadyTouched              = nullptr;

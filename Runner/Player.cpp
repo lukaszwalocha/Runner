@@ -9,6 +9,7 @@ Player::Player(std::string name)
 	this->setElementPosition();
 	this->setMovementSpeed();
 	this->playerBody.setSize(sf::Vector2f(20.0f, 45.0f));
+	this->points               = 0;
 	this->currentState         = 10;
 	this->windTouchCounter     = 100;
 	this->windCollides         = false;

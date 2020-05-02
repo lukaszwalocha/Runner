@@ -16,9 +16,10 @@ int main(){
 	//OBJECTS
 	RelationsManager relationsManager;
 	GameManager gameManager;
-	std::shared_ptr<Blocks> alreadyTouched;
-	//GAME OBJECTS
 	ObjectsMap gameObjects = relationsManager.setObjectsMap(window);
+	std::shared_ptr<Blocks> alreadyTouched;
+	
+	gameManager.defineLevelStages();
 
 	while (window.isOpen()){
 		sf::Event evnt;
@@ -30,7 +31,7 @@ int main(){
 		window.clear();
 		
 		relationsManager.setGameObjectsBehaviour(gameObjects, window, gameManager);
-		relationsManager.setGameObjectsRelations(gameObjects, alreadyTouched);
+		relationsManager.setGameObjectsRelations(gameObjects, alreadyTouched, gameManager);
 
 		window.display();
 	}
