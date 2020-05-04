@@ -217,6 +217,26 @@ void RelationsManager::resetAlreadyTouchedBlock(std::shared_ptr<Blocks>& already
 	}
 }
 
+void RelationsManager::defineStandingPlayerBehaviour(std::shared_ptr<Blocks> &alreadyTouched, Player* playerObject ){
+	
+	sf::RectangleShape currentRect;
+	
+	if (alreadyTouched->name == "Big blocks"){
+		currentRect = alreadyTouched->bigBlockBody;
+	}
+	else if (alreadyTouched->name != "Big blocks"){
+		currentRect = alreadyTouched->blockBody;
+	}
+	
+	if (playerObject->getBody().getPosition().x < currentRect.getPosition().x - playerObject->getBody().getSize().x ||
+		playerObject->getBody().getPosition().x > currentRect.getPosition().x + currentRect.getSize().x){
+			
+		playerObject->currentState = 2;
+		playerObject->movementSpeed = 2;
+		alreadyTouched = nullptr;
+	}
+}
+
 void RelationsManager::checkBlocksCollision(Blocks* blockObject, Player* playerObject, std::shared_ptr<Blocks>& alreadyTouched, std::string blockTypeIdentifier){
 	
 	std::shared_ptr<sf::RectangleShape>  currentBlocksType;
@@ -234,6 +254,7 @@ void RelationsManager::checkBlocksCollision(Blocks* blockObject, Player* playerO
 	}
 
 	if (!alreadyTouched){
+
 		for (auto& element : currentBlocksTypeVect){
 
 			if (currentBlocksTypeVect == blockObject->blocksVector || currentBlocksTypeVect == blockObject->upperBlocksVector){
@@ -244,12 +265,6 @@ void RelationsManager::checkBlocksCollision(Blocks* blockObject, Player* playerO
 			}
 
 			if (playerObject->currentState == 2 && playerObject->getBody().getGlobalBounds().intersects(currentBlocksType->getGlobalBounds())){
-
-
-				if (blockTypeIdentifier == "Big blocks"){
-					int test;
-					test = 1;
-				}
 
 	 			double blockBodyPosY    = currentBlocksType->getPosition().y;
 				double playerObjectPosY = playerObject->getBody().getPosition().y + playerObject->getBody().getSize().y;
@@ -264,13 +279,7 @@ void RelationsManager::checkBlocksCollision(Blocks* blockObject, Player* playerO
 	}
 
 	if (playerObject->currentState == 0 && alreadyTouched){ // check when player should fall from the block standing on
-		if (playerObject->getBody().getPosition().x < alreadyTouched->blockBody.getPosition().x - playerObject->getBody().getSize().x||
-			playerObject->getBody().getPosition().x > alreadyTouched->blockBody.getPosition().x + alreadyTouched->blockBody.getSize().x){
-//TODO: blockBody should be also for big block body - solves the collision problem
-			playerObject->currentState  = 2;
-			playerObject->movementSpeed = 2;
-			alreadyTouched              = nullptr;
-		}
+		defineStandingPlayerBehaviour(alreadyTouched, playerObject);
 	}
 }
 

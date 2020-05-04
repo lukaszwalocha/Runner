@@ -38,7 +38,7 @@ class RelationsManager{
 		void checkBlocksCollision(Blocks* blockObj, Player* playerObj, std::shared_ptr<Blocks>& alreadyTouched,
 			                      std::string blockTypeIdentifier);
 		void resetAlreadyTouchedBlock(std::shared_ptr<Blocks>& alreadyTouched);
-
+		void RelationsManager::defineStandingPlayerBehaviour(std::shared_ptr<Blocks> &alreadyTouched, Player* playerObject);
 	//------------------------------------STRATEGY 
 		std::unique_ptr<IShape> makeAlive(std::string name, sf::RenderWindow& window);
 		//void setRelations(std::unique_ptr<IShape>& object, std::unique_ptr<IShape>& anotherObject); // here defining which relations managers function will be executed
