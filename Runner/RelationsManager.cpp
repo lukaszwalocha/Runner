@@ -241,6 +241,7 @@ void RelationsManager::checkBlocksCollision(Blocks* blockObject, Player* playerO
 	
 	std::shared_ptr<sf::RectangleShape>  currentBlocksType;
 	std::vector<std::shared_ptr<Blocks>> currentBlocksTypeVect;
+	std::string touchedName = "";
 
 	if (blockTypeIdentifier == "Blocks"){
 		currentBlocksTypeVect = blockObject->blocksVector;
@@ -254,25 +255,29 @@ void RelationsManager::checkBlocksCollision(Blocks* blockObject, Player* playerO
 	}
 
 	if (!alreadyTouched){
-
 		for (auto& element : currentBlocksTypeVect){
-
 			if (currentBlocksTypeVect == blockObject->blocksVector || currentBlocksTypeVect == blockObject->upperBlocksVector){
 				currentBlocksType = std::make_shared<sf::RectangleShape>(element->blockBody);
 			}
 			else if (currentBlocksTypeVect == blockObject->bigBlocksVector){
 				currentBlocksType = std::make_shared<sf::RectangleShape>(element->bigBlockBody);
 			}
+			
+			if (playerObject->getBody().getGlobalBounds().intersects(currentBlocksType->getGlobalBounds())){
 
-			if (playerObject->currentState == 2 && playerObject->getBody().getGlobalBounds().intersects(currentBlocksType->getGlobalBounds())){
-
-	 			double blockBodyPosY    = currentBlocksType->getPosition().y;
+				touchedName = element->name;
+				double blockBodyPosY = currentBlocksType->getPosition().y;
 				double playerObjectPosY = playerObject->getBody().getPosition().y + playerObject->getBody().getSize().y;
 
-				if (playerObjectPosY - 4 < blockBodyPosY){
-					playerObject->currentState  = 0;
-					playerObject->movementSpeed = 3;
-					alreadyTouched              = element;
+				if (playerObject->currentState == 2){
+					if (playerObjectPosY - 4 < blockBodyPosY){
+						playerObject->currentState = 0;
+						playerObject->movementSpeed = 3;
+						alreadyTouched = element;
+					}
+				}
+				if (playerObjectPosY - 4 > blockBodyPosY && touchedName == "Big blocks"){
+					playerObject->obstacleWallCollides = true;
 				}
 			}
 		}

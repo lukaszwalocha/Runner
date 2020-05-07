@@ -14,6 +14,7 @@ Player::Player(std::string name)
 	this->windTouchCounter     = 100;
 	this->windCollides         = false;
 	this->obstacleWallCollides = false;
+	this->wallCollisionCounter = 0;
 }
 
 Player::~Player()
@@ -25,6 +26,7 @@ std::string Player::getName(){
 
 void Player::defineBehaviour(sf::RenderWindow& window){
 	this->move();
+	this->setBlockWallInteractions();
 	this->draw(window);
 }
 
@@ -35,7 +37,7 @@ void Player::move(){
 		(windTouchCounter > 0) ? playerBody.move(-3, 0) : (windCollides = false, windTouchCounter = 100);
 	}
 	//MOVING LEFT AND RIGHT
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)      && this->playerBody.getPosition().x > 10)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)       && this->playerBody.getPosition().x > 10)
 		playerBody.move (-2, 0);
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) && this->playerBody.getPosition().x < 1000 && this->obstacleWallCollides == false)
 		playerBody.move(1.5, 0);
@@ -58,10 +60,19 @@ void Player::move(){
 		default:
 			playerBody.move(0, 0);				  break; 
 	}
+}
 
-	//collision effects
-	if (this->obstacleWallCollides == true)
+void Player::setBlockWallInteractions(){
+	//collision effects - wall bouncing
+	if (this->obstacleWallCollides == true){
 		playerBody.move(-2.5, 0);
+		this->wallCollisionCounter++;
+	}
+
+	if (this->wallCollisionCounter == 20){
+		this->obstacleWallCollides = false;
+		this->wallCollisionCounter = 0;
+	}
 }
 
 void Player::setElementPosition(){

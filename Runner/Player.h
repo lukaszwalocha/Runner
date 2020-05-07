@@ -15,6 +15,7 @@ class Player:public IShape{
 		void draw(sf::RenderWindow& window) override;
 		void defineBehaviour(sf::RenderWindow& window) override;
 		void resetAlreadyTouchedBlock(std::shared_ptr<Blocks>& alreadyTouched);
+		void setBlockWallInteractions();
 		std::string getName() override;
 		sf::RectangleShape getBody();
 	public:
@@ -24,6 +25,7 @@ class Player:public IShape{
 		bool obstacleWallCollides;
 		int  windTouchCounter;
 		int points;
+		int wallCollisionCounter;
 		std::string name;
 	private:
 		sf::RectangleShape playerBody;
